@@ -641,6 +641,8 @@ ButterMenu.prototype.closeDropdown = function () {
         this.activeDropdown.setAttribute("aria-expanded", "false");
         this.activeDropdown = void 0;
         this.dropdownContainer.removeAttribute("style");
+        this.dropdownBackground.removeAttribute("style");
+        this.dropdownArrow.removeAttribute("style");
         this.unregisterArrowKeyNavigation();
     }
 };
