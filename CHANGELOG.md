@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2018-10-24
+
+### Fixed
+- do not block content below `.bm-dropdown-wrapper` by adding `pointer-events: none` and changed z-index from 500 to 1060 and added variable to adjust
+
 ## [1.0.2] - 2018-10-24
 
 ### Fixed

@@ -1,4 +1,5 @@
 $bm-menu-generate-classes: false !default;
+$bm-menu-default-z-index: 1060 !default;
 $bm-menu-default-bg: #17a2b8 !default;
 $bm-menu-compact-default-backdrop-bg: rgba(0, 0, 0, 1) !default;
 $bm-menu-compact-default-backdrop-opacity: .3 !default;
@@ -13,7 +14,7 @@ $bm-menu-compact-prev-height: 44px !default;
   &.bm-menu {
     position: relative;
     perspective: 2000px;
-    z-index: 500;
+    z-index: $bm-menu-default-z-index;
 
     .bm-nav-root {
       display: flex;
@@ -26,7 +27,7 @@ $bm-menu-compact-prev-height: 44px !default;
 
     .bm-dropdown-wrapper {
       position: absolute;
-      z-index: 1000;
+      z-index: $bm-menu-default-z-index +1;
       left: 0;
       right: 0;
       top: 100%;
@@ -36,12 +37,14 @@ $bm-menu-compact-prev-height: 44px !default;
       will-change: transform, opacity;
       transition-property: transform, opacity;
       transition-duration: 250ms;
+      pointer-events: none;
     }
 
     &.bm-dropdown-active {
       .bm-dropdown-wrapper {
         opacity: 1;
         transform: none;
+        pointer-events: auto;
       }
 
       .bm-dropdown-section {
