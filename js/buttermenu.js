@@ -1,5 +1,3 @@
-require('../../assets/_buttermenu.scss');
-
 function ButterMenu(t) {
     let e = this;
     this.container = document.querySelector(t);
@@ -351,7 +349,6 @@ ButterMenu.prototype.compactPrevious = function (element, event) {
     }
 
     this.activeDropdown = this.getPreviousPopupSection(this.activeDropdown);
-    console.log(this.activeDropdown);
 };
 
 ButterMenu.prototype.queryArray = function (element, context) {

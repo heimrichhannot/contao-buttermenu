@@ -1,13 +1,13 @@
 $bm-menu-generate-classes: false !default;
-$bm-menu-default-bg: #17a2b8;
-$bm-menu-compact-default-backdrop-bg: rgba(0, 0, 0, 1);
-$bm-menu-compact-default-backdrop-opacity: .3;
-$bm-menu-compact-canvas-z-index: 3;
-$bm-menu-compact-backdrop-z-index: 2;
-$bm-menu-compact-icon-border-style: solid;
-$bm-menu-compact-prev-border-color: #fff;
-$bm-menu-compact-prev-border-width: 2px;
-$bm-menu-compact-prev-height: 44px;
+$bm-menu-default-bg: #17a2b8 !default;
+$bm-menu-compact-default-backdrop-bg: rgba(0, 0, 0, 1) !default;
+$bm-menu-compact-default-backdrop-opacity: .3 !default;
+$bm-menu-compact-canvas-z-index: 3 !default;
+$bm-menu-compact-backdrop-z-index: 2 !default;
+$bm-menu-compact-icon-border-style: solid !default;
+$bm-menu-compact-prev-border-color: #fff !default;
+$bm-menu-compact-prev-border-width: 2px !default;
+$bm-menu-compact-prev-height: 44px !default;
 
 @mixin bm-default($bg: $bm-menu-default-bg) {
   &.bm-menu {
@@ -323,3 +323,4 @@ $bm-menu-compact-prev-height: 44px;
   @include bm-compact-backdrop();
   @include bm-compact-basics();
 }
+
