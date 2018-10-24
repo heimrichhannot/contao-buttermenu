@@ -1,0 +1,325 @@
+$bm-menu-generate-classes: false !default;
+$bm-menu-default-bg: #17a2b8;
+$bm-menu-compact-default-backdrop-bg: rgba(0, 0, 0, 1);
+$bm-menu-compact-default-backdrop-opacity: .3;
+$bm-menu-compact-canvas-z-index: 3;
+$bm-menu-compact-backdrop-z-index: 2;
+$bm-menu-compact-icon-border-style: solid;
+$bm-menu-compact-prev-border-color: #fff;
+$bm-menu-compact-prev-border-width: 2px;
+$bm-menu-compact-prev-height: 44px;
+
+@mixin bm-default($bg: $bm-menu-default-bg) {
+  &.bm-menu {
+    position: relative;
+    perspective: 2000px;
+    z-index: 500;
+
+    .bm-nav-root {
+      display: flex;
+      justify-content: space-between;
+
+      > li {
+        flex-grow: 1;
+      }
+    }
+
+    .bm-dropdown-wrapper {
+      position: absolute;
+      z-index: 1000;
+      left: 0;
+      right: 0;
+      top: 100%;
+      transform: rotateX(-15deg);
+      transform-origin: 50% -50px;
+      opacity: 0;
+      will-change: transform, opacity;
+      transition-property: transform, opacity;
+      transition-duration: 250ms;
+    }
+
+    &.bm-dropdown-active {
+      .bm-dropdown-wrapper {
+        opacity: 1;
+        transform: none;
+      }
+
+      .bm-dropdown-section {
+        &.active {
+          pointer-events: auto;
+        }
+      }
+    }
+
+    &.bm-initialized {
+      .bm-dropdown-wrapper {
+        display: block;
+      }
+    }
+
+    &.bm-no-dropdown-transition {
+      .bm-dropdown-arrow,
+      .bm-dropdown-bg,
+      .bm-dropdown-container {
+        transition: none;
+      }
+    }
+
+    .bm-dropdown-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transition-property: transform;
+      transition-duration: 250ms;
+      overflow: hidden;
+      width: 380px;
+      height: 400px;
+      transform: translateX(0);
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    .bm-dropdown-arrow {
+      position: absolute;
+      left: 0;
+      transition-duration: 250ms;
+      top: -9px;
+      margin: 0 0 0 -9px;
+      width: 18px;
+      height: 18px;
+      transform: rotate(45deg);
+      box-shadow: -3px -3px 5px rgba(82, 95, 127, .04);
+      will-change: transform;
+      transition-property: transform;
+    }
+
+    &.bm-overlay-active {
+      // apply background, shadows and borders only on active overlays
+      .bm-dropdown-bg,
+      .bm-dropdown-arrow {
+        background: $bg;
+      }
+
+      .bm-dropdown-bg {
+        box-shadow: 0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px rgba(50, 50, 93, .15), 0 5px 15px rgba(0, 0, 0, .1);
+      }
+    }
+
+    .bm-dropdown-container {
+      position: absolute;
+      left: 0;
+      transition-duration: .25s;
+      overflow: hidden;
+      width: 500px;
+      top: 0;
+      transform: translateX(0);
+      will-change: transform, width, height;
+      transition-property: transform, width, height;
+    }
+
+    .bm-dropdown-section {
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+      transition-property: transform, opacity;
+      transition-duration: .25s;
+
+      &.active {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .bm-dropdown-content {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    .bm-off-canvas-back-wrapper {
+      display: none;
+    }
+  }
+}
+
+@mixin bm-compact-default($bg: $bm-menu-default-bg) {
+  .bm-compact-canvas {
+    position: fixed;
+    height: 100%;
+    width: 80%;
+    top: 0;
+    left: 0;
+    overflow-x: hidden;
+    background: transparent;
+    transition: transform .4s ease;
+    transform: translate3d(-100%, 0, 0);
+    z-index: $bm-menu-compact-canvas-z-index;
+    opacity: 0;
+
+    &.active {
+      background: $bg;
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+
+    &.bm-canvas-transition {
+      transition: all .4s ease;
+    }
+  }
+
+  .bm-compact-scroll {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    overflow: hidden;
+    right: 0;
+    z-index: 0;
+  }
+
+  .bm-menu {
+    position: relative;
+
+    .bm-nav {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background: transparent;
+      transform: translate3d(-100%, 0, 0);
+      transition: all .4s ease;
+
+      &.active {
+        transform: translate3d(0, 0, 0);
+        background: $bg;
+      }
+
+      > li {
+        > a {
+          transform: translate3d(0, 0, 0);
+          transition: all .4s ease;
+        }
+      }
+
+      &.active-child {
+        > li {
+          > a {
+            transform: translate3d(-100%, 0, 0);
+          }
+        }
+      }
+    }
+
+    .bm-off-canvas-back-wrapper {
+      display: flex;
+
+      .bm-back-title {
+        flex-grow: 1;
+      }
+    }
+
+    .bm-prev-wrapper {
+      display: flex;
+      height: $bm-menu-compact-prev-height;
+      padding: 0 $bm-menu-compact-prev-height;
+
+      .bm-prev-title {
+        flex-grow: 1;
+        text-align: center;
+      }
+
+      .bm-prev-btn {
+        &:before {
+          content: "";
+          display: block;
+          transform: rotate(-45deg);
+          left: 23px;
+          right: auto;
+          width: 8px;
+          height: 8px;
+          margin: auto;
+          position: absolute;
+          top: $bm-menu-compact-prev-height / 2 + 8px / -2;
+          border-color: $bm-menu-compact-prev-border-color;
+          border-width: $bm-menu-compact-prev-border-width;
+          border-style: $bm-menu-compact-icon-border-style;
+          border-bottom: none;
+          border-right: none;
+        }
+      }
+
+      &.bm-root {
+        .bm-prev-btn {
+          &:before {
+            display: none;
+          }
+        }
+      }
+    }
+
+    a {
+      &.bm-has-popup {
+        position: relative;
+        &:after {
+          content: "";
+          display: block;
+          transform: rotate(135deg);
+          right: 23px;
+          width: 8px;
+          height: 8px;
+          margin: auto;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          border-color: $bm-menu-compact-prev-border-color;
+          border-width: $bm-menu-compact-prev-border-width;
+          border-style: $bm-menu-compact-icon-border-style;
+          border-bottom: none;
+          border-right: none;
+        }
+      }
+    }
+  }
+}
+
+@mixin bm-compact-backdrop($bg: $bm-menu-compact-default-backdrop-bg) {
+  .bm-compact-backdrop {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    z-index: $bm-menu-compact-backdrop-z-index;
+    background: $bg;
+    transform: translate3d(-100%, 0, 0);
+
+    &.active {
+      transform: translate3d(0, 0, 0);
+      transition: opacity .2s ease;
+      opacity: $bm-menu-compact-default-backdrop-opacity;
+    }
+  }
+}
+
+@mixin bm-compact-basics() {
+  html {
+    &.bm-canvas-open {
+      overflow: hidden;
+    }
+  }
+}
+
+@if $bm-menu-generate-classes {
+  .bm-default {
+    @include bm-default();
+  }
+
+  .bm-compact-default {
+    @include bm-compact-default();
+  }
+
+  @include bm-compact-backdrop();
+  @include bm-compact-basics();
+}
