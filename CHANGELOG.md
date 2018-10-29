@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2018-10-29
+
+### Fixed
+- `z-index` variables added and increase to fit between bootstrap dropdown and sticky z-index
+
 ## [1.0.3] - 2018-10-24
 
 ### Fixed
