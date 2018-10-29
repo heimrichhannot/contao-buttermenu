@@ -17,6 +17,10 @@ $bm-menu-compact-prev-height: 44px !default;
     perspective: 2000px;
     z-index: $bm-menu-default-z-index;
 
+    .bm-prev-wrapper {
+      display: none;
+    }
+
     .bm-nav-root {
       display: flex;
       justify-content: space-between;
@@ -49,7 +53,7 @@ $bm-menu-compact-prev-height: 44px !default;
       }
 
       .bm-dropdown-section {
-        &.active {
+        &.bm-active {
           pointer-events: auto;
         }
       }
@@ -128,7 +132,7 @@ $bm-menu-compact-prev-height: 44px !default;
       transition-property: transform, opacity;
       transition-duration: .25s;
 
-      &.active {
+      &.bm-active {
         transform: translateX(0);
         opacity: 1;
       }

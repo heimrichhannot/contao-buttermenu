@@ -148,7 +148,7 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     };
 
     leaveRootNavHandler = function (event, element) {
-        if("touch" !== event.pointerType && !event.fromElement.classList.contains('bm-dropdown-arrow')){
+        if ("touch" !== event.pointerType && !event.fromElement.classList.contains('bm-dropdown-arrow')) {
             menu.startCloseTimeout();
         }
     };
@@ -486,18 +486,21 @@ ButterMenu.prototype.openDropdown = function (t, e) {
         this.activeDropdown = t;
         this.activeDropdown.setAttribute("aria-expanded", "true");
         this.dropdownRoots.forEach(function (t, e) {
-            t.classList.remove("active")
+            if (t !== n.activeDropdown) {
+                t.classList.remove("bm-active");
+                t.setAttribute("aria-expanded", "false");
+            }
         });
-        t.classList.add("active");
+        t.classList.add("bm-active");
 
         let i, o, a, r = t.getAttribute("data-bm-dropdown"), s = "left";
         this.dropdownSections.forEach(function (c) {
-            c.el.classList.remove("active");
+            c.el.classList.remove("bm-active");
             c.el.classList.remove("left");
             c.el.classList.remove("right");
             if (c.name === r) {
                 c.el.setAttribute("aria-hidden", "false");
-                c.el.classList.add("active");
+                c.el.classList.add("bm-active");
                 s = "right";
 
                 i = c.content.scrollWidth || c.content.offsetWidth; // prior scrollWith to support flexbox `colums`
@@ -599,7 +602,7 @@ ButterMenu.prototype.reset = function () {
     });
 
     this.dropdownSections.forEach(section => {
-        section.el.classList.remove("active");
+        section.el.classList.remove("bm-active");
         section.el.classList.remove("right");
         section.el.setAttribute("aria-hidden", "true");
     });
@@ -625,9 +628,9 @@ ButterMenu.prototype.reset = function () {
 
 ButterMenu.prototype.closeDropdown = function () {
     let t = this;
-    if(this.activeDropdown){
+    if (this.activeDropdown) {
         this.dropdownRoots.forEach(function (t, e) {
-            t.classList.remove("active")
+            t.classList.remove("bm-active")
         });
         this.dropdownContainer.querySelector('[aria-hidden="false"]').setAttribute("aria-hidden", "true");
         clearTimeout(this.enableTransitionTimeout);

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.5] - 2018-10-29
+
+### Fixed
+- default menu: change active dropdown section class to `bm-active`, reset aria-expanded after dropdown changes   
+
 ## [1.0.4] - 2018-10-29
 
 ### Fixed
