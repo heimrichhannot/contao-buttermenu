@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2018-10-30
+
+### Fixed
+- `registerArrowKeyNavigation` refactored
+
 ## [1.0.6] - 2018-10-30
 
 ### Fixed

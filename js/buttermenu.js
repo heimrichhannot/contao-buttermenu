@@ -460,23 +460,22 @@ ButterMenu.prototype.checkCollision = function () {
 ButterMenu.prototype.registerArrowKeyNavigation = function (t, e) {
     let n = this;
     null !== this.keyDownHandler && this.unregisterArrowKeyNavigation();
-    let i = [].slice.call(e.querySelectorAll("a"))
-        , o = 0;
-    i[o].focus(),
-        this.keyDownHandler = function (e) {
-            9 === e.keyCode ? (t.focus(),
-                n.startCloseTimeout()) : 38 === e.keyCode ? (e.preventDefault(),
-            --o < 0 && (o += i.length),
-                i[o].focus()) : 40 === e.keyCode && (e.preventDefault(),
-            ++o >= i.length && (o -= i.length),
-                i[o].focus())
-        }
-        ,
-        this.container.addEventListener("keydown", this.keyDownHandler)
+    let i = [].slice.call(e.querySelectorAll("a"));
+    let o = 0;
+    i[o].focus();
+    this.keyDownHandler = function (e) {
+        9 === e.keyCode ? (t.focus(),
+            n.startCloseTimeout()) : 38 === e.keyCode ? (e.preventDefault(),
+        --o < 0 && (o += i.length),
+            i[o].focus()) : 40 === e.keyCode && (e.preventDefault(),
+        ++o >= i.length && (o -= i.length),
+            i[o].focus())
+    };
+    this.container.addEventListener("keydown", this.keyDownHandler);
 };
 ButterMenu.prototype.unregisterArrowKeyNavigation = function () {
-    this.container.removeEventListener("keydown", this.keyDownHandler),
-        this.keyDownHandler = null
+    this.container.removeEventListener("keydown", this.keyDownHandler);
+    this.keyDownHandler = null
 };
 ButterMenu.prototype.openDropdown = function (t, e) {
     let n = this;
