@@ -148,7 +148,7 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     };
 
     leaveRootNavHandler = function (event, element) {
-        if ("touch" !== event.pointerType && !event.fromElement.classList.contains('bm-dropdown-arrow')) {
+        if ("touch" !== event.pointerType && event.fromElement && !event.fromElement.classList.contains('bm-dropdown-arrow')) {
             menu.startCloseTimeout();
         }
     };
@@ -502,6 +502,28 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 c.el.classList.add("bm-active");
                 s = "right";
 
+                let list = c.content.querySelector('ul'),
+                    listStyle = window.getComputedStyle(list);
+
+                if ('flex' === listStyle.display && 'column' === listStyle.flexDirection && 'wrap' === listStyle.flexWrap) {
+                    let listItems = c.content.querySelectorAll('ul > li'), listItemHeight = 0;
+
+                    if (listItems.length > parseInt(n.container.getAttribute('data-bm-column-min') || 5)) {
+                        let breakAfter = Math.round(listItems.length / parseInt(n.container.getAttribute('data-bm-columns') || 2));
+
+                        for (let lit = 0; lit <= listItems.length; lit++) {
+                            let listItem = listItems[lit];
+
+                            listItemHeight += listItem.scrollHeight || listItem.offsetHeight;
+
+                            if (lit === breakAfter) {
+                                list.style.maxHeight = listItemHeight + "px";
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 i = c.content.scrollWidth || c.content.offsetWidth; // prior scrollWith to support flexbox `colums`
                 o = c.content.scrollHeight || c.content.offsetHeight;  // prior scrollHeight to support flexbox `colums`
 
@@ -519,6 +541,7 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 c.el.setAttribute("aria-hidden", "true");
             }
         });
+
         let c = i / 380,
             d = o / 400,
             activeNavRect = t.getBoundingClientRect(),
