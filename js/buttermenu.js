@@ -506,17 +506,16 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                     listStyle = window.getComputedStyle(list);
 
                 if ('flex' === listStyle.display && 'column' === listStyle.flexDirection && 'wrap' === listStyle.flexWrap) {
-                    let listItems = c.content.querySelectorAll('ul > li'), listItemHeight = 0;
+                    let listItems = c.content.querySelectorAll('ul > li'), listItemHeight = 0, breakAt = parseInt(n.container.getAttribute('data-bm-column-min') || 5);
 
-                    if (listItems.length > parseInt(n.container.getAttribute('data-bm-column-min') || 5)) {
-                        let breakAfter = Math.round(listItems.length / parseInt(n.container.getAttribute('data-bm-columns') || 2));
+                    if (listItems.length > breakAt) {
 
                         for (let lit = 0; lit <= listItems.length; lit++) {
                             let listItem = listItems[lit];
 
                             listItemHeight += listItem.scrollHeight || listItem.offsetHeight;
 
-                            if (lit === breakAfter) {
+                            if (lit + 1 === breakAt) {
                                 list.style.maxHeight = listItemHeight + "px";
                                 break;
                             }
@@ -524,8 +523,9 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                     }
                 }
 
-                i = c.content.scrollWidth || c.content.offsetWidth; // prior scrollWith to support flexbox `colums`
-                o = c.content.scrollHeight || c.content.offsetHeight;  // prior scrollHeight to support flexbox `colums`
+                i = list.scrollWidth || list.offsetWidth || c.content.scrollWidth || c.content.offsetWidth; // prior scrollWith to support flexbox `colums`
+                o = list.scrollHeight || list.offsetHeight || c.content.scrollHeight || c.content.offsetHeight;  // prior scrollHeight to support flexbox `colums`
+
 
                 if (c.content.getAttribute("data-bm-fixed")) {
                     c.content.setAttribute("data-bm-fixed", true)

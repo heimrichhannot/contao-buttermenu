@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2018-11-20
+
+### Fixed
+- `data-bm-column-min` behavior and fixed wrong height on resize
+
 ## [1.1.0] - 2018-11-19
 
 ### Added
