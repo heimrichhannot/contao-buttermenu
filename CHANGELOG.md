@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2018-11-28
+
+### Fixed
+- removed `overflow: hidden` from `.bm-dropdown-container` (dropdown-menus might otherwise be wrong positioned while tab navigation)
+
 ## [1.1.1] - 2018-11-20
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "name": "contao-buttermenu",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A smooth animated navigation menu for contao with hover dropdown (big screens for instance) and off-canvas (mobile for instance) modes.",
   "main": "js/buttermenu",
   "author": "Rico Kaltofen <r.kaltofen@heimrich-hannot.de>",
