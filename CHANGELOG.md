@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.3] - 2018-12-11
+
+### Fixed
+- properly close dropdown on leaving root nav in normal mode
+- do not reset style attribute on closing dropdown in normal mode
+- smoother closing-animation: apply background always to arrow and background in normal mode
+
 ## [1.1.2] - 2018-11-28
 
 ### Fixed

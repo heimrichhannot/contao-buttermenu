@@ -85,6 +85,7 @@ $bm-menu-compact-prev-height: 44px !default;
       transform: translateX(0);
       transform-origin: 0 0;
       will-change: transform;
+      background: $bg;
     }
 
     .bm-dropdown-arrow {
@@ -99,14 +100,11 @@ $bm-menu-compact-prev-height: 44px !default;
       box-shadow: -3px -3px 5px rgba(82, 95, 127, .04);
       will-change: transform;
       transition-property: transform;
+      background: $bg;
     }
 
     &.bm-overlay-active {
-      // apply background, shadows and borders only on active overlays
-      .bm-dropdown-bg,
-      .bm-dropdown-arrow {
-        background: $bg;
-      }
+      // apply shadows and borders only on active overlays
 
       .bm-dropdown-bg {
         box-shadow: 0 50px 100px rgba(50, 50, 93, .1), 0 15px 35px rgba(50, 50, 93, .15), 0 5px 15px rgba(0, 0, 0, .1);

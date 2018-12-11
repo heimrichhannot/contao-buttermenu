@@ -148,7 +148,7 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     };
 
     leaveRootNavHandler = function (event, element) {
-        if ("touch" !== event.pointerType && event.fromElement && !event.fromElement.classList.contains('bm-dropdown-arrow')) {
+        if ("touch" !== event.pointerType) {
             menu.startCloseTimeout();
         }
     };
@@ -665,9 +665,6 @@ ButterMenu.prototype.closeDropdown = function () {
         this.container.classList.remove("bm-dropdown-active");
         this.activeDropdown.setAttribute("aria-expanded", "false");
         this.activeDropdown = void 0;
-        this.dropdownContainer.removeAttribute("style");
-        this.dropdownBackground.removeAttribute("style");
-        this.dropdownArrow.removeAttribute("style");
         this.unregisterArrowKeyNavigation();
     }
 };
