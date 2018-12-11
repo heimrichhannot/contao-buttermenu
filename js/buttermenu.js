@@ -1,5 +1,6 @@
 function ButterMenu(t) {
     let e = this;
+    this.windowWidth = 0;
     this.container = document.querySelector(t);
     this.root = this.container.querySelector(".bm-wrapper");
     this.primaryNav = this.root.querySelector(".level_1");
@@ -75,6 +76,15 @@ function ButterMenu(t) {
 }
 
 ButterMenu.prototype.registerEvents = function () {
+    let windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+
+    // nothing changed
+    if (this.windowWidth > 0 && windowWidth === this.windowWidth) {
+        return;
+    }
+
+    this.windowWidth = windowWidth;
+
     this.clearEvents();
     this.reset();
 

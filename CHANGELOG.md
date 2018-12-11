@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2018-12-11
+
+### Fixed
+- trigger registerEvents only again if window width changed 
+
 ## [1.1.3] - 2018-12-11
 
 ### Fixed
