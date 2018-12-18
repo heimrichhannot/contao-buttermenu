@@ -2,6 +2,11 @@ function ButterMenu(t) {
     let e = this;
     this.windowWidth = 0;
     this.container = document.querySelector(t);
+
+    if (null === this.container) {
+        return;
+    }
+
     this.root = this.container.querySelector(".bm-wrapper");
     this.primaryNav = this.root.querySelector(".level_1");
     this.primaryNavItem = this.root.querySelector(".bm-nav-root > .bm-item > .bm-has-dropdown");
