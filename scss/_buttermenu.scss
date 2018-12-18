@@ -123,15 +123,28 @@ $bm-menu-compact-prev-height: 44px !default;
     }
 
     .bm-dropdown-section {
-      opacity: 0;
       pointer-events: none;
-      will-change: transform, opacity;
+      opacity: 0;
+      will-change: transform, opacityy;
       transition-property: transform, opacity;
       transition-duration: .25s;
+
+      // ie fix
+      .bm-dropdown-content{
+        opacity: 0;
+        will-change: opacity;
+        transition-property: opacity;
+        transition-duration: .25s;
+      }
 
       &.bm-active {
         transform: translateX(0);
         opacity: 1;
+
+        // ie fix
+        .bm-dropdown-content{
+          opacity: 1;
+        }
       }
     }
 

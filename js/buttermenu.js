@@ -669,7 +669,12 @@ ButterMenu.prototype.closeDropdown = function () {
         this.dropdownRoots.forEach(function (t, e) {
             t.classList.remove("bm-active")
         });
-        this.dropdownContainer.querySelector('[aria-hidden="false"]').setAttribute("aria-hidden", "true");
+        let hiddenElement = this.dropdownContainer.querySelector('[aria-hidden="false"]');
+
+        if(null !== hiddenElement){
+            hiddenElement.setAttribute("aria-hidden", "true")
+        }
+
         clearTimeout(this.enableTransitionTimeout);
 
         this.disableTransitionTimeout = setTimeout(function () {

@@ -1,10 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [1.1.6] - 2018-12-18
+## [1.1.6] - 2018-12-17
 
 ### Fixed
-- catch if container does not exist (`.bm-menu` is not available in DOM)
+- IE 11 support
 
 ## [1.1.5] - 2018-12-17
 
