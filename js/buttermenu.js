@@ -301,6 +301,7 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
 };
 
 ButterMenu.prototype.initOffCanvasPopup = function () {
+    this.compactCanvas.setAttribute('aria-hidden', true);
     this.activeDropdown = false;
     this.popupSections.forEach(section => {
 
@@ -658,7 +659,7 @@ ButterMenu.prototype.reset = function () {
     this.compactPrevTitle.textContent = '';
     this.compactPrev.classList.remove('bm-root');
     this.compactCanvas.classList.remove('active');
-    this.compactCanvas.setAttribute('aria-hidden', true);
+    this.compactCanvas.setAttribute('aria-hidden', false);
     this.compactBackdrop.classList.remove('active');
     document.documentElement.classList.remove('bm-canvas-open');
 };

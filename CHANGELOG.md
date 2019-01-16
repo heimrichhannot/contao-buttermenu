@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.8] - 2019-01-16
+
+### Fixed
+- ARIA support in default mode
+
 ## [1.1.7] - 2018-12-17
 
 ### Fixed
