@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.9] - 2019-01-16
+
+### Fixed
+- Microsoft EDGE support (fix overlapping menu links of non visible menus)
+- visibility/transition tweaks
+
 ## [1.1.8] - 2019-01-16
 
 ### Fixed

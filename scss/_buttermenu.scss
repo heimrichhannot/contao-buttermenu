@@ -68,7 +68,8 @@ $bm-menu-compact-prev-height: 44px !default;
     &.bm-no-dropdown-transition {
       .bm-dropdown-arrow,
       .bm-dropdown-bg,
-      .bm-dropdown-container {
+      .bm-dropdown-container,
+      .bm-dropdown-section {
         transition: none;
       }
     }
@@ -113,6 +114,7 @@ $bm-menu-compact-prev-height: 44px !default;
 
     .bm-dropdown-container {
       position: absolute;
+      overflow: hidden;
       left: 0;
       transition-duration: .25s;
       width: 500px;
@@ -130,7 +132,7 @@ $bm-menu-compact-prev-height: 44px !default;
       transition-duration: .25s;
 
       // ie fix
-      .bm-dropdown-content{
+      .bm-dropdown-content {
         opacity: 0;
         will-change: opacity;
         transition-property: opacity;
@@ -140,11 +142,20 @@ $bm-menu-compact-prev-height: 44px !default;
       &.bm-active {
         transform: translateX(0);
         opacity: 1;
+        pointer-events: auto;
 
         // ie fix
-        .bm-dropdown-content{
+        .bm-dropdown-content {
           opacity: 1;
         }
+      }
+
+      &.left {
+        transform: translateX(-100vw)
+      }
+
+      &.right {
+        transform: translateX(100vw);
       }
     }
 
@@ -278,6 +289,7 @@ $bm-menu-compact-prev-height: 44px !default;
     a {
       &.bm-has-popup {
         position: relative;
+
         &:after {
           content: "";
           display: block;
