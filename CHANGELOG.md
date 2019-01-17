@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.1.10] - 2019-01-17
+
+### Fixed
+- dropdown section alignment for few menu items
+
 ## [1.1.9] - 2019-01-16
 
 ### Fixed

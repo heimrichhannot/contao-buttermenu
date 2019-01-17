@@ -560,10 +560,9 @@ ButterMenu.prototype.openDropdown = function (t, e) {
 
         let c = i / 380,
             d = o / 400,
-            activeNavRect = t.getBoundingClientRect(),
             activeNavTextRect = t.lastChild.getBoundingClientRect(),
             containerRect = this.container.getBoundingClientRect(),
-            x = (activeNavRect.left - containerRect.left + activeNavRect.width / 2 - i / 2),
+            x = (activeNavTextRect.left - containerRect.left + activeNavTextRect.width / 2 - i / 2),
             containerGap = window.innerWidth - containerRect.width,
             minLeft = Math.max(parseInt(this.container.getAttribute('data-bm-min-left') || 15), 0),
             minRight = Math.max(parseInt(this.container.getAttribute('data-bm-bm-min-right') || 15), 0);
