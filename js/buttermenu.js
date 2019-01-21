@@ -28,6 +28,8 @@ function ButterMenu(t) {
         }
     });
     this.popupSections = [];
+    this.popupLists = this.queryArray(".bm-nav", this.container);
+
     this.queryArray(".bm-nav li.bm-item", this.container).forEach(function (t, i) {
         t.closest('.bm-nav').setAttribute('data-bm-id', i);
     });
@@ -57,24 +59,34 @@ function ButterMenu(t) {
     let compactCanvasSelector = this.container.getAttribute('data-bm-compact-canvas');
     if (compactCanvasSelector) {
         this.compactCanvas = document.querySelector(compactCanvasSelector);
-
     }
     let backdrop = document.createElement('div');
     backdrop.classList.add('bm-compact-backdrop');
     backdrop.setAttribute('data-bm-compact-toggle', compactCanvasSelector);
     this.compactBackdrop = document.body.appendChild(backdrop);
     this.compactCanvasToggler = document.querySelectorAll('[data-bm-compact-toggle="' + compactCanvasSelector + '"]');
+    this.activeCompactCanvasToggler = null;
     this.compactCanvasToggler.forEach(function (t, i) {
         t.addEventListener('click', function (n) {
             n.preventDefault();
-            e.toggleCompactCanvas(t);
+            true === e.canvasOpen ? e.closeCompactCanvas(t) : e.openCompactCanvas(t);
+            e.activeCompactCanvasToggler = n.target;
+        });
+
+        t.addEventListener('keydown', function (n) {
+            if (n.keyCode === 13) {
+                e.container.classList.add('bm-keyboardfocus-within');
+                e.activeCompactCanvasToggler = n.target;
+            }
         });
     });
-    this.compactPrev = this.container.querySelector('.bm-prev-wrapper');
+    this.compactPrev = this.container.querySelector('.bm-prev');
     this.compactPrevBtn = this.compactPrev.querySelector('.bm-prev-btn');
     this.compactPrevTitle = this.compactPrev.querySelector('.bm-prev-title');
+    this.compactPreviousActiveLink = null;
     this.enhancedElements = [];
     this.keyDownHandler = null;
+    this.globalKeyDownHandler = null;
     window.addEventListener("load", this.registerEvents.bind(this));
     window.addEventListener("resize", this.registerEvents.bind(this));
     this.container.classList.add("bm-initialized")
@@ -101,12 +113,26 @@ ButterMenu.prototype.registerEvents = function () {
     this.registerDefaultEvents();
 };
 
+ButterMenu.prototype.addEvent = function (element, event, handler) {
+    this.enhancedElements.push({
+        element, event, handler
+    });
+
+    element.addEventListener(event, handler);
+};
+
 ButterMenu.prototype.clearEvents = function () {
     this.enhancedElements.forEach(ee => {
         ee.element.removeEventListener(ee.eventType, ee.handler);
     });
 
     this.enhancedElements = [];
+};
+
+ButterMenu.prototype.getPopupSectionFromLink = function (link) {
+    return this.popupSections.filter(section => {
+        return link === section.el;
+    })[0];
 };
 
 ButterMenu.prototype.getPreviousPopupSection = function (active) {
@@ -264,7 +290,7 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     let menu = this;
 
     clickHandler = function (event, element) {
-        menu.toggleOffCanvasPopup(element, event);
+        menu.compactNext(element, event);
     };
 
     prevClickHandler = function (element, event) {
@@ -297,22 +323,40 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
         ee.element.addEventListener(ee.eventType, ee.handler);
     });
 
-    menu.initOffCanvasPopup();
+    menu.initCompact();
 };
 
-ButterMenu.prototype.initOffCanvasPopup = function () {
+ButterMenu.prototype.initCompact = function () {
     this.compactCanvas.setAttribute('aria-hidden', true);
     this.activeDropdown = false;
+
+    this.dropdownSections.forEach(section => {
+        section.el.removeAttribute("aria-hidden", "false");
+
+        let uls = section.el.querySelectorAll('ul');
+
+        uls.forEach(ul => {
+            ul.setAttribute('aria-hidden', true);
+        });
+    });
+
+
+    this.primaryNav.setAttribute('aria-hidden', true);
+
     this.popupSections.forEach(section => {
+        section.el.removeAttribute('tabindex');
 
         // active dropDown
         if ((section.el.classList.contains('trail') || section.el.classList.contains('active')) && section.next) {
             this.activeDropdown = section;
+            this.activeDropdown.visible = this.activeDropdown.current;
 
             section.current.classList.add('active-child'); // trailing parents should not be active
 
             if (section.next) {
+                this.activeDropdown.visible = this.activeDropdown.next;
                 section.next.classList.add('active');
+                section.next.setAttribute('aria-hidden', 'false');
             }
         }
 
@@ -331,40 +375,72 @@ ButterMenu.prototype.initOffCanvasPopup = function () {
 
     if (false === this.activeDropdown) {
         this.activeDropdown = this.rootDropdown;
+        this.activeDropdown.visible = this.activeDropdown.current;
         this.rootDropdown.current.classList.add('active');
+        this.rootDropdown.current.setAttribute('aria-hidden', false);
         this.compactPrev.classList.add('bm-root');
+        this.compactPrev.classList.add('disabled');
+        this.compactPrev.setAttribute('tabindex', '-1');
     }
+
+    this.registerGlobalCompactCanvasArrowKeyNavigation();
 };
 
-ButterMenu.prototype.toggleOffCanvasPopup = function (element, event) {
-    if (element.next && (this.activeDropdown !== element || this.activeDropdown === this.rootDropdown)) {
-
+ButterMenu.prototype.compactNext = function (element, event) {
+    let menu = this;
+    if (null !== element.next && (this.activeDropdown !== element || this.activeDropdown === this.rootDropdown)) {
         event.preventDefault();
-        this.activeDropdown.current.classList.remove('active');
+        this.activeDropdown.visible.setAttribute('aria-hidden', true);
+        this.activeDropdown.visible.classList.remove('active');
+        this.compactPreviousActiveLink = element.el;
         element.next.classList.add('active');
         this.compactPrevTitle.textContent = element.next.getAttribute('data-bm-prev-text');
+
         element.current.classList.add('active-child'); // trailing parents should not be active
 
         this.activeDropdown = element;
+        this.activeDropdown.visible = this.activeDropdown.next;
+        this.activeDropdown.visible.setAttribute('aria-hidden', false);
+
+        clearTimeout(this.enableTransitionTimeout);
+
+        this.enableTransitionTimeout = setTimeout(function () {
+            menu.registerCompactCanvasArrowKeyNavigation();
+        }, 250);
+
         this.compactPrev.classList.remove('bm-root');
+        this.compactPrev.classList.remove('disabled');
+
+
     }
 };
 
 ButterMenu.prototype.compactPrevious = function (element, event) {
-    if (this.activeDropdown.next) {
-        this.activeDropdown.next.classList.remove('active');
-    }
+    let menu = this;
 
-    this.activeDropdown.current.classList.remove('active-child');
-    this.activeDropdown.current.classList.add('active');
-
-    this.compactPrevTitle.textContent = this.activeDropdown.current.getAttribute('data-bm-prev-text');
-
-    if (null === this.activeDropdown.previous) {
-        this.compactPrev.classList.add('bm-root');
+    if (this.activeDropdown.visible) {
+        this.activeDropdown.visible.classList.remove('active');
+        this.activeDropdown.visible.setAttribute('aria-hidden', true);
     }
 
     this.activeDropdown = this.getPreviousPopupSection(this.activeDropdown);
+    this.activeDropdown.visible = this.activeDropdown.current;
+    this.activeDropdown.visible.classList.remove('active-child');
+    this.activeDropdown.visible.classList.add('active');
+
+    this.compactPrevTitle.textContent = this.activeDropdown.visible.getAttribute('data-bm-prev-text');
+
+    clearTimeout(this.enableTransitionTimeout);
+
+    this.enableTransitionTimeout = setTimeout(function () {
+        menu.registerCompactCanvasArrowKeyNavigation(menu.compactPreviousActiveLink);
+    }, 250);
+
+    if (null === this.activeDropdown.previous) {
+        this.compactPrev.classList.add('bm-root');
+        this.compactPrev.classList.add('disabled');
+        this.compactPrev.setAttribute('tabindex', '-1');
+    }
 };
 
 ButterMenu.prototype.queryArray = function (element, context) {
@@ -412,41 +488,49 @@ ButterMenu.prototype.touch = {
     }
 };
 
-ButterMenu.prototype.toggleCompactCanvas = function (t) {
+ButterMenu.prototype.openCompactCanvas = function (t) {
     let e = this;
-    if (true === this.canvasOpen) {
-        this.compactCanvasToggler.forEach(function (n, i) {
-            n.classList.remove('is-active');
-        });
-        this.canvasOpen = false;
-        this.compactCanvas.classList.add("bm-canvas-transition");
-        clearTimeout(this.enableTransitionTimeout),
-            this.disableTransitionTimeout = setTimeout(function () {
-                e.compactCanvas.classList.remove("bm-canvas-transition")
-            }, 250);
+    this.compactCanvasToggler.forEach(function (n, i) {
+        n.classList.add('is-active');
+    });
 
-        this.compactCanvas.classList.remove('active');
-        this.compactCanvas.setAttribute('aria-hidden', true);
-        this.compactBackdrop.classList.remove('active');
-        document.documentElement.classList.remove('bm-canvas-open');
-    } else {
-        this.compactCanvasToggler.forEach(function (n, i) {
-            n.classList.add('is-active');
-        });
+    this.compactCanvas.classList.add("bm-canvas-transition");
 
-        this.compactCanvas.classList.add("bm-canvas-transition");
+    clearTimeout(this.enableTransitionTimeout);
+    this.enableTransitionTimeout = setTimeout(function () {
+        e.compactCanvas.classList.remove("bm-canvas-transition");
+    }, 250);
 
-        clearTimeout(this.disableTransitionTimeout);
-        this.enableTransitionTimeout = setTimeout(function () {
-            e.compactCanvas.classList.remove("bm-canvas-transition")
-        }, 250);
+    this.compactCanvas.classList.add('active');
+    this.compactCanvas.setAttribute('aria-hidden', false);
+    this.compactBackdrop.classList.add('active');
+    this.canvasOpen = true;
 
-        this.compactCanvas.classList.add('active');
-        this.compactCanvas.setAttribute('aria-hidden', false);
-        this.compactBackdrop.classList.add('active');
+    clearTimeout(this.disableTransitionTimeout);
+    this.disableTransitionTimeout = setTimeout(function () {
+        e.registerCompactCanvasArrowKeyNavigation();
         document.documentElement.classList.add('bm-canvas-open');
-        this.canvasOpen = true;
-    }
+    }, 400);
+};
+
+ButterMenu.prototype.closeCompactCanvas = function () {
+    let e = this;
+    this.compactCanvasToggler.forEach(function (n, i) {
+        n.classList.remove('is-active');
+    });
+    this.canvasOpen = false;
+    this.compactCanvas.classList.add("bm-canvas-transition");
+    clearTimeout(this.enableTransitionTimeout);
+    this.disableTransitionTimeout = setTimeout(function () {
+        e.compactCanvas.classList.remove("bm-canvas-transition")
+    }, 250);
+
+    this.compactCanvas.classList.remove('active');
+    this.compactCanvas.setAttribute('aria-hidden', true);
+    this.compactBackdrop.classList.remove('active');
+    this.container.classList.remove('bm-keyboardfocus-within');
+    document.documentElement.classList.remove('bm-canvas-open');
+    this.unregisterCompactCanvasArrowKeyNavigation();
 };
 
 ButterMenu.prototype.isMobileViewport = function () {
@@ -473,26 +557,115 @@ ButterMenu.prototype.checkCollision = function () {
         }
     }
 };
-ButterMenu.prototype.registerArrowKeyNavigation = function (t, e) {
+ButterMenu.prototype.registerDropdownArrowKeyNavigation = function (t, e) {
     let n = this;
-    null !== this.keyDownHandler && this.unregisterArrowKeyNavigation();
+    null !== this.keyDownHandler && this.unregisterDropDownArrowKeyNavigation();
     let i = [].slice.call(e.querySelectorAll("a"));
     let o = 0;
     i[o].focus();
     this.keyDownHandler = function (e) {
-        9 === e.keyCode ? (t.focus(),
-            n.startCloseTimeout()) : 38 === e.keyCode ? (e.preventDefault(),
-        --o < 0 && (o += i.length),
-            i[o].focus()) : 40 === e.keyCode && (e.preventDefault(),
-        ++o >= i.length && (o -= i.length),
-            i[o].focus())
+        if (9 === e.keyCode) {
+            t.focus();
+            n.startCloseTimeout();
+        } else if (38 === e.keyCode) {
+            e.preventDefault();
+            --o < 0 && (o += i.length);
+            i[o].focus();
+        } else if (40 === e.keyCode) {
+            e.preventDefault();
+            ++o >= i.length && (o -= i.length);
+            i[o].focus();
+        }
     };
-    this.container.addEventListener("keydown", this.keyDownHandler);
+    eventType = 'keydown';
+    element = this.container;
+    this.enhancedElements.push({
+        element, eventType, handler(event) {
+            n.keyDownHandler(event)
+        }
+    });
+
+    this.addEvent(this.container, 'keydown', this.keyDownHandler);
 };
-ButterMenu.prototype.unregisterArrowKeyNavigation = function () {
+ButterMenu.prototype.unregisterDropDownArrowKeyNavigation = function () {
     this.container.removeEventListener("keydown", this.keyDownHandler);
-    this.keyDownHandler = null
+    this.keyDownHandler = null;
 };
+
+ButterMenu.prototype.registerGlobalCompactCanvasArrowKeyNavigation = function () {
+    let n = this;
+
+    this.globalKeyDownHandler = function (e) {
+        // escape
+        if (27 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+            n.closeCompactCanvas();
+            if (null !== n.activeCompactCanvasToggler) {
+                n.activeCompactCanvasToggler.focus();
+            }
+        }
+    };
+
+    this.addEvent(document.body, 'keydown', this.globalKeyDownHandler);
+};
+
+ButterMenu.prototype.unregisterGlobalCompactCanvasArrowKeyNavigation = function () {
+    document.body.removeEventListener("keydown", this.globalKeyDownHandler);
+    this.globalKeyDownHandler = null;
+};
+
+ButterMenu.prototype.registerCompactCanvasArrowKeyNavigation = function (focusElement) {
+    let n = this;
+
+    null !== this.keyDownHandler && this.unregisterCompactCanvasArrowKeyNavigation();
+
+    let i = [].slice.call(this.activeDropdown.visible.querySelectorAll("a"));
+    let o = focusElement ? i.indexOf(focusElement) : 0;
+    i[o].focus();
+
+    this.keyDownHandler = function (e) {
+        // tab
+        if (9 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+        }
+        // arrow-up
+        else if (38 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+            e.preventDefault();
+            --o < 0 && (o += i.length);
+            i[o].focus();
+        }
+        // arrow-down
+        else if (40 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+            e.preventDefault();
+            ++o >= i.length && (o -= i.length);
+            i[o].focus();
+        }
+        // arrow-left
+        else if (37 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+            e.preventDefault();
+            n.compactPrevious();
+        }
+        // arrow-right
+        else if (39 === e.keyCode) {
+            n.container.classList.add('bm-keyboardfocus-within');
+            let section = n.getPopupSectionFromLink(document.activeElement);
+            if (null !== section && null !== section.next) {
+                n.compactNext(section, e);
+            }
+        }
+    };
+
+    this.addEvent(this.compactCanvas, 'keydown', this.keyDownHandler);
+};
+
+ButterMenu.prototype.unregisterCompactCanvasArrowKeyNavigation = function () {
+    this.compactCanvas.removeEventListener("keydown", this.keyDownHandler);
+    this.keyDownHandler = null;
+};
+
 ButterMenu.prototype.openDropdown = function (t, e) {
     let n = this;
     if (this.activeDropdown !== t) {
@@ -524,7 +697,7 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 if ('flex' === listStyle.display && 'column' === listStyle.flexDirection && 'wrap' === listStyle.flexWrap) {
                     let listItems = c.content.querySelectorAll('ul > li'), listItemHeight = 0, breakAt = parseInt(n.container.getAttribute('data-bm-column-min') || 5);
 
-                    if (listItems.length > breakAt) {
+                    if (listItems.length >= breakAt) {
 
                         for (let lit = 0; lit <= listItems.length; lit++) {
                             let listItem = listItems[lit];
@@ -551,7 +724,7 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 }
 
                 a = c.content;
-                e && e.keyboardNavigation && n.registerArrowKeyNavigation(t, c.el);
+                e && e.keyboardNavigation && n.registerDropdownArrowKeyNavigation(t, c.el);
             } else {
                 c.el.classList.add(s);
                 c.el.setAttribute("aria-hidden", "true");
@@ -628,7 +801,10 @@ ButterMenu.prototype.openOffCanvasDropdown = function (t, e) {
 
 ButterMenu.prototype.reset = function () {
     // default
-    this.stopCloseTimeout();
+    this.activeDropdown = false;
+    this.keyDownHandler = null;
+    this.globalKeyDownHandler = null;
+    this.closeDropdown();
     clearTimeout(this.disableTransitionTimeout);
     clearTimeout(this.enableTransitionTimeout);
 
@@ -642,6 +818,10 @@ ButterMenu.prototype.reset = function () {
         section.el.classList.remove("bm-active");
         section.el.classList.remove("right");
         section.el.setAttribute("aria-hidden", "true");
+
+        section.el.querySelectorAll('.bm-link').forEach(link => {
+            link.setAttribute('tabindex', '-1');
+        });
     });
 
     this.container.classList.remove("bm-overlay-active");
@@ -656,10 +836,14 @@ ButterMenu.prototype.reset = function () {
     });
     this.canvasOpen = false;
     this.compactPrevTitle.textContent = '';
+    this.compactPrev.disabled = false;
     this.compactPrev.classList.remove('bm-root');
     this.compactCanvas.classList.remove('active');
     this.compactCanvas.setAttribute('aria-hidden', false);
     this.compactBackdrop.classList.remove('active');
+    this.compactPreviousActiveLink = null;
+    this.container.classList.remove('bm-keyboardfocus-within');
+    this.activeCompactCanvasToggler = null;
     document.documentElement.classList.remove('bm-canvas-open');
 };
 
@@ -671,7 +855,7 @@ ButterMenu.prototype.closeDropdown = function () {
         });
         let hiddenElement = this.dropdownContainer.querySelector('[aria-hidden="false"]');
 
-        if(null !== hiddenElement){
+        if (null !== hiddenElement) {
             hiddenElement.setAttribute("aria-hidden", "true")
         }
 
@@ -683,9 +867,8 @@ ButterMenu.prototype.closeDropdown = function () {
 
         this.container.classList.remove("bm-overlay-active");
         this.container.classList.remove("bm-dropdown-active");
-        this.activeDropdown.setAttribute("aria-expanded", "false");
         this.activeDropdown = void 0;
-        this.unregisterArrowKeyNavigation();
+        this.unregisterDropDownArrowKeyNavigation();
     }
 };
 ButterMenu.prototype.toggleDropdown = function (t) {

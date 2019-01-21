@@ -4,8 +4,8 @@ $bm-menu-default-wrapper-z-index: 1015 !default;
 $bm-menu-default-bg: #17a2b8 !default;
 $bm-menu-compact-default-backdrop-bg: rgba(0, 0, 0, 1) !default;
 $bm-menu-compact-default-backdrop-opacity: .3 !default;
-$bm-menu-compact-canvas-z-index: 1015 !default;
-$bm-menu-compact-backdrop-z-index: 1010 !default;
+$bm-menu-compact-canvas-z-index: 1055 !default;
+$bm-menu-compact-backdrop-z-index: 1050 !default;
 $bm-menu-compact-icon-border-style: solid !default;
 $bm-menu-compact-prev-border-color: #fff !default;
 $bm-menu-compact-prev-border-width: 2px !default;
@@ -137,6 +137,7 @@ $bm-menu-compact-prev-height: 44px !default;
         will-change: opacity;
         transition-property: opacity;
         transition-duration: .25s;
+        visibility: hidden; // edge fix
       }
 
       &.bm-active {
@@ -147,15 +148,16 @@ $bm-menu-compact-prev-height: 44px !default;
         // ie fix
         .bm-dropdown-content {
           opacity: 1;
+          visibility: visible;
         }
       }
 
       &.left {
-        transform: translateX(-100vw)
+        transform: translateX(-150px)
       }
 
       &.right {
-        transform: translateX(100vw);
+        transform: translateX(150px);
       }
     }
 
@@ -180,10 +182,15 @@ $bm-menu-compact-prev-height: 44px !default;
     left: 0;
     overflow-x: hidden;
     background: transparent;
-    transition: transform .4s ease;
+    transition: transform 250ms ease;
     transform: translate3d(-100%, 0, 0);
     z-index: $bm-menu-compact-canvas-z-index;
     opacity: 0;
+
+    &:not([aria-hidden="false"]),
+    &:not([aria-hidden="true"]).bm-canvas-transition {
+      visibility: hidden;
+    }
 
     &.active {
       background: $bg;
@@ -192,7 +199,7 @@ $bm-menu-compact-prev-height: 44px !default;
     }
 
     &.bm-canvas-transition {
-      transition: all .4s ease;
+      transition: all 250ms ease;
     }
   }
 
@@ -216,7 +223,11 @@ $bm-menu-compact-prev-height: 44px !default;
       bottom: 0;
       background: transparent;
       transform: translate3d(-100%, 0, 0);
-      transition: all .4s ease;
+      transition: all 250ms ease;
+
+      &:not(.active) {
+        visibility: hidden;
+      }
 
       &.active {
         transform: translate3d(0, 0, 0);
@@ -226,7 +237,7 @@ $bm-menu-compact-prev-height: 44px !default;
       > li {
         > a {
           transform: translate3d(0, 0, 0);
-          transition: all .4s ease;
+          transition: all 250ms ease;
         }
       }
 
@@ -247,14 +258,20 @@ $bm-menu-compact-prev-height: 44px !default;
       }
     }
 
-    .bm-prev-wrapper {
+    .bm-prev {
       display: flex;
       height: $bm-menu-compact-prev-height;
       padding: 0 $bm-menu-compact-prev-height;
 
+      &.disabled {
+        pointer-events: none;
+      }
+
       .bm-prev-title {
         flex-grow: 1;
-        text-align: center;
+        align-items: center;
+        justify-content: center;
+        display: flex;
       }
 
       .bm-prev-btn {

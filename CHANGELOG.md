@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2019-01-21
+
+### Added
+- keyboard navigation in compact mode
+
+### Fixed
+- overlapping invisible links in Edge browser
+
 ## [1.1.10] - 2019-01-17
 
 ### Fixed
