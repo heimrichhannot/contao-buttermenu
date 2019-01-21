@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.1] - 2019-01-21
+
+### Fixed
+- position fix within keyboard navigation (dropdown mode)
+
 ## [1.2.0] - 2019-01-21
 
 ### Added
