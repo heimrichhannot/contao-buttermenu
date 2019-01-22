@@ -141,6 +141,9 @@ $bm-menu-compact-prev-height: 44px !default;
 
       &.bm-active {
         transform: translateX(0);
+      }
+
+      &[aria-hidden="false"]{
         opacity: 1;
         pointer-events: auto;
 

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.4] - 2019-01-22
+
+### Fixed
+- disable pointer-events on current active dropdown if not visible properly
+
 ## [1.2.3] - 2019-01-22
 
 ### Fixed
