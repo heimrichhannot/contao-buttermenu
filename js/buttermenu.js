@@ -561,6 +561,7 @@ ButterMenu.prototype.openCompactCanvas = function (t) {
 
 ButterMenu.prototype.closeCompactCanvas = function () {
     let e = this;
+    this.keyDownHandler = null;
     this.compactCanvasToggler.forEach(function (n, i) {
         n.classList.remove('is-active');
     });
@@ -575,7 +576,6 @@ ButterMenu.prototype.closeCompactCanvas = function () {
     this.compactCanvas.setAttribute('aria-hidden', true);
     this.compactBackdrop.classList.remove('active');
     this.container.classList.remove('bm-keyboardfocus-within');
-    this.keyDownHandler = null;
     document.documentElement.classList.remove('bm-canvas-open');
 };
 
