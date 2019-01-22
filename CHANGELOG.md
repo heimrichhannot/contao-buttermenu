@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.2] - 2019-01-22
+
+### Fixed
+- keyboard navigation event handling (make usage of enhancedElements array in order to add and remove event listeners on demand)
+
 ## [1.2.1] - 2019-01-21
 
 ### Fixed

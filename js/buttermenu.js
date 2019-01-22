@@ -86,7 +86,6 @@ function ButterMenu(t) {
     this.compactPreviousActiveLink = null;
     this.enhancedElements = [];
     this.keyDownHandler = null;
-    this.globalKeyDownHandler = null;
     window.addEventListener("load", this.registerEvents.bind(this));
     window.addEventListener("resize", this.registerEvents.bind(this));
     this.container.classList.add("bm-initialized")
@@ -210,6 +209,10 @@ ButterMenu.prototype.registerDefaultEvents = function () {
         menu.touch.isDragging() || menu.closeDropdown();
     };
 
+    keydownHandler = function (event) {
+        menu.keyDownHandler(event);
+    };
+
     let eventType;
     let element;
 
@@ -224,7 +227,7 @@ ButterMenu.prototype.registerDefaultEvents = function () {
         eventType = 'focusin';
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                focusInRootNavHandler(event, element)
+                focusInRootNavHandler(event, element);
             }
         });
 
@@ -280,6 +283,14 @@ ButterMenu.prototype.registerDefaultEvents = function () {
         }
     });
 
+    eventType = 'keydown';
+    element = this.container;
+    menu.enhancedElements.push({
+        element, eventType, handler(event) {
+            keydownHandler(event)
+        }
+    });
+
     // add listeners
     menu.enhancedElements.forEach(ee => {
         ee.element.addEventListener(ee.eventType, ee.handler);
@@ -296,6 +307,21 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     prevClickHandler = function (element, event) {
         event.preventDefault();
         menu.compactPrevious(element, event);
+    };
+
+    keydownHandler = function (event) {
+        menu.keyDownHandler(event);
+    };
+
+    globalKeydownHandler = function (event) {
+        // escape
+        if (27 === event.keyCode) {
+            menu.container.classList.add('bm-keyboardfocus-within');
+            menu.closeCompactCanvas();
+            if (null !== menu.activeCompactCanvasToggler) {
+                menu.activeCompactCanvasToggler.focus();
+            }
+        }
     };
 
     let eventType;
@@ -315,6 +341,22 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     menu.enhancedElements.push({
         element, eventType, handler(event) {
             prevClickHandler(element, event)
+        }
+    });
+
+    eventType = 'keydown';
+    element = this.compactCanvas;
+    menu.enhancedElements.push({
+        element, eventType, handler(event) {
+            keydownHandler(event)
+        }
+    });
+
+    eventType = 'keydown';
+    element = document.body;
+    menu.enhancedElements.push({
+        element, eventType, handler(event) {
+            globalKeydownHandler(event)
         }
     });
 
@@ -382,8 +424,6 @@ ButterMenu.prototype.initCompact = function () {
         this.compactPrev.classList.add('disabled');
         this.compactPrev.setAttribute('tabindex', '-1');
     }
-
-    this.registerGlobalCompactCanvasArrowKeyNavigation();
 };
 
 ButterMenu.prototype.compactNext = function (element, event) {
@@ -405,7 +445,7 @@ ButterMenu.prototype.compactNext = function (element, event) {
         clearTimeout(this.enableTransitionTimeout);
 
         this.enableTransitionTimeout = setTimeout(function () {
-            menu.registerCompactCanvasArrowKeyNavigation();
+            menu.updateCompactCanvasArrowKeyNavigation();
         }, 250);
 
         this.compactPrev.classList.remove('bm-root');
@@ -433,7 +473,7 @@ ButterMenu.prototype.compactPrevious = function (element, event) {
     clearTimeout(this.enableTransitionTimeout);
 
     this.enableTransitionTimeout = setTimeout(function () {
-        menu.registerCompactCanvasArrowKeyNavigation(menu.compactPreviousActiveLink);
+        menu.updateCompactCanvasArrowKeyNavigation(menu.compactPreviousActiveLink);
     }, 250);
 
     if (null === this.activeDropdown.previous) {
@@ -508,7 +548,7 @@ ButterMenu.prototype.openCompactCanvas = function (t) {
 
     clearTimeout(this.disableTransitionTimeout);
     this.disableTransitionTimeout = setTimeout(function () {
-        e.registerCompactCanvasArrowKeyNavigation();
+        e.updateCompactCanvasArrowKeyNavigation();
         document.documentElement.classList.add('bm-canvas-open');
     }, 400);
 };
@@ -530,7 +570,6 @@ ButterMenu.prototype.closeCompactCanvas = function () {
     this.compactBackdrop.classList.remove('active');
     this.container.classList.remove('bm-keyboardfocus-within');
     document.documentElement.classList.remove('bm-canvas-open');
-    this.unregisterCompactCanvasArrowKeyNavigation();
 };
 
 ButterMenu.prototype.isMobileViewport = function () {
@@ -557,9 +596,8 @@ ButterMenu.prototype.checkCollision = function () {
         }
     }
 };
-ButterMenu.prototype.registerDropdownArrowKeyNavigation = function (t, e) {
+ButterMenu.prototype.updateDropdownArrowKeyNavigation = function (t, e) {
     let n = this;
-    null !== this.keyDownHandler && this.unregisterDropDownArrowKeyNavigation();
     let i = [].slice.call(e.querySelectorAll("a"));
     let o = 0;
     i[o].focus();
@@ -577,48 +615,10 @@ ButterMenu.prototype.registerDropdownArrowKeyNavigation = function (t, e) {
             i[o].focus();
         }
     };
-    eventType = 'keydown';
-    element = this.container;
-    this.enhancedElements.push({
-        element, eventType, handler(event) {
-            n.keyDownHandler(event)
-        }
-    });
-
-    this.addEvent(this.container, 'keydown', this.keyDownHandler);
-};
-ButterMenu.prototype.unregisterDropDownArrowKeyNavigation = function () {
-    this.container.removeEventListener("keydown", this.keyDownHandler);
-    this.keyDownHandler = null;
 };
 
-ButterMenu.prototype.registerGlobalCompactCanvasArrowKeyNavigation = function () {
+ButterMenu.prototype.updateCompactCanvasArrowKeyNavigation = function (focusElement) {
     let n = this;
-
-    this.globalKeyDownHandler = function (e) {
-        // escape
-        if (27 === e.keyCode) {
-            n.container.classList.add('bm-keyboardfocus-within');
-            n.closeCompactCanvas();
-            if (null !== n.activeCompactCanvasToggler) {
-                n.activeCompactCanvasToggler.focus();
-            }
-        }
-    };
-
-    this.addEvent(document.body, 'keydown', this.globalKeyDownHandler);
-};
-
-ButterMenu.prototype.unregisterGlobalCompactCanvasArrowKeyNavigation = function () {
-    document.body.removeEventListener("keydown", this.globalKeyDownHandler);
-    this.globalKeyDownHandler = null;
-};
-
-ButterMenu.prototype.registerCompactCanvasArrowKeyNavigation = function (focusElement) {
-    let n = this;
-
-    null !== this.keyDownHandler && this.unregisterCompactCanvasArrowKeyNavigation();
-
     let i = [].slice.call(this.activeDropdown.visible.querySelectorAll("a"));
     let o = focusElement ? i.indexOf(focusElement) : 0;
     i[o].focus();
@@ -657,13 +657,6 @@ ButterMenu.prototype.registerCompactCanvasArrowKeyNavigation = function (focusEl
             }
         }
     };
-
-    this.addEvent(this.compactCanvas, 'keydown', this.keyDownHandler);
-};
-
-ButterMenu.prototype.unregisterCompactCanvasArrowKeyNavigation = function () {
-    this.compactCanvas.removeEventListener("keydown", this.keyDownHandler);
-    this.keyDownHandler = null;
 };
 
 ButterMenu.prototype.openDropdown = function (t, e) {
@@ -724,7 +717,7 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 }
 
                 a = c.content;
-                e && e.keyboardNavigation && n.registerDropdownArrowKeyNavigation(t, c.el);
+                e && e.keyboardNavigation && n.updateDropdownArrowKeyNavigation(t, c.el);
             } else {
                 c.el.classList.add(s);
                 c.el.setAttribute("aria-hidden", "true");
@@ -803,7 +796,6 @@ ButterMenu.prototype.reset = function () {
     // default
     this.activeDropdown = false;
     this.keyDownHandler = null;
-    this.globalKeyDownHandler = null;
     this.closeDropdown();
     clearTimeout(this.disableTransitionTimeout);
     clearTimeout(this.enableTransitionTimeout);
@@ -868,7 +860,6 @@ ButterMenu.prototype.closeDropdown = function () {
         this.container.classList.remove("bm-overlay-active");
         this.container.classList.remove("bm-dropdown-active");
         this.activeDropdown = void 0;
-        this.unregisterDropDownArrowKeyNavigation();
     }
 };
 ButterMenu.prototype.toggleDropdown = function (t) {
