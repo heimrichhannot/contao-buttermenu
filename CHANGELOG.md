@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.3] - 2019-01-22
+
+### Fixed
+- on close dropdown/canvas unset keyboard navigation 
+
 ## [1.2.2] - 2019-01-22
 
 ### Fixed

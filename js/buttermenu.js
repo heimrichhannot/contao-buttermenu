@@ -210,7 +210,9 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     };
 
     keydownHandler = function (event) {
-        menu.keyDownHandler(event);
+        if(null !== menu.keyDownHandler){
+            menu.keyDownHandler(event);
+        }
     };
 
     let eventType;
@@ -310,7 +312,9 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     };
 
     keydownHandler = function (event) {
-        menu.keyDownHandler(event);
+        if(null !== menu.keyDownHandler){
+            menu.keyDownHandler(event);
+        }
     };
 
     globalKeydownHandler = function (event) {
@@ -411,6 +415,7 @@ ButterMenu.prototype.initCompact = function () {
 
             if (this.activeDropdown === section) {
                 this.compactPrevTitle.textContent = section.el.textContent;
+                this.compactPrev.removeAttribute('tabindex');
             }
         }
     });
@@ -434,6 +439,7 @@ ButterMenu.prototype.compactNext = function (element, event) {
         this.activeDropdown.visible.classList.remove('active');
         this.compactPreviousActiveLink = element.el;
         element.next.classList.add('active');
+        this.compactPrev.removeAttribute('tabindex');
         this.compactPrevTitle.textContent = element.next.getAttribute('data-bm-prev-text');
 
         element.current.classList.add('active-child'); // trailing parents should not be active
@@ -569,6 +575,7 @@ ButterMenu.prototype.closeCompactCanvas = function () {
     this.compactCanvas.setAttribute('aria-hidden', true);
     this.compactBackdrop.classList.remove('active');
     this.container.classList.remove('bm-keyboardfocus-within');
+    this.keyDownHandler = null;
     document.documentElement.classList.remove('bm-canvas-open');
 };
 
@@ -860,6 +867,7 @@ ButterMenu.prototype.closeDropdown = function () {
         this.container.classList.remove("bm-overlay-active");
         this.container.classList.remove("bm-dropdown-active");
         this.activeDropdown = void 0;
+        this.keyDownHandler = null;
     }
 };
 ButterMenu.prototype.toggleDropdown = function (t) {
