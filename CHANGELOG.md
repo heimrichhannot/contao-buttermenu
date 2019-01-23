@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.5] - 2019-01-23
+
+### Fixed
+- set visibility to hidden for relevant elements until buttermenu is initialized (`bm-initialized`) to prevent flickering on page load
+
 ## [1.2.4] - 2019-01-22
 
 ### Fixed
