@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.6] - 2019-01-23
+
+### Fixed
+- fix `aria-expanded` (true, false) on canvas toggle elements (open/close)
+
 ## [1.2.5] - 2019-01-23
 
 ### Fixed

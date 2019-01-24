@@ -552,6 +552,10 @@ ButterMenu.prototype.openCompactCanvas = function (t) {
     this.compactBackdrop.classList.add('active');
     this.canvasOpen = true;
 
+    this.compactCanvasToggler.forEach(function (n, i) {
+        n.setAttribute('aria-expanded', 'true');
+    });
+
     clearTimeout(this.disableTransitionTimeout);
     this.disableTransitionTimeout = setTimeout(function () {
         e.updateCompactCanvasArrowKeyNavigation();
@@ -571,6 +575,10 @@ ButterMenu.prototype.closeCompactCanvas = function () {
     this.disableTransitionTimeout = setTimeout(function () {
         e.compactCanvas.classList.remove("bm-canvas-transition")
     }, 250);
+
+    this.compactCanvasToggler.forEach(function (n, i) {
+        n.setAttribute('aria-expanded', 'false');
+    });
 
     this.compactCanvas.classList.remove('active');
     this.compactCanvas.setAttribute('aria-hidden', true);
