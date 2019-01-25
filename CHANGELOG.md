@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.7] - 2019-01-25
+
+### Fixed
+- js error fixed, when no dropdown is available 
+
 ## [1.2.6] - 2019-01-23
 
 ### Fixed

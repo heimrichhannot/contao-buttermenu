@@ -88,7 +88,6 @@ function ButterMenu(t) {
     this.keyDownHandler = null;
     window.addEventListener("load", this.registerEvents.bind(this));
     window.addEventListener("resize", this.registerEvents.bind(this));
-    this.container.classList.add("bm-initialized")
 }
 
 ButterMenu.prototype.registerEvents = function () {
@@ -106,10 +105,12 @@ ButterMenu.prototype.registerEvents = function () {
 
     if (this.isMobileViewport() && 'off-canvas' === this.compactMode) {
         this.registerOffCanvasEvents();
+        this.container.classList.add("bm-initialized");
         return;
     }
 
     this.registerDefaultEvents();
+    this.container.classList.add("bm-initialized");
 };
 
 ButterMenu.prototype.addEvent = function (element, event, handler) {
@@ -210,7 +211,7 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     };
 
     keydownHandler = function (event) {
-        if(null !== menu.keyDownHandler){
+        if (null !== menu.keyDownHandler) {
             menu.keyDownHandler(event);
         }
     };
@@ -312,7 +313,7 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     };
 
     keydownHandler = function (event) {
-        if(null !== menu.keyDownHandler){
+        if (null !== menu.keyDownHandler) {
             menu.keyDownHandler(event);
         }
     };
@@ -601,7 +602,7 @@ ButterMenu.prototype.checkCollision = function () {
                 this.compact = false;
             }
         } else {
-            let n = this.primaryNavItem.getBoundingClientRect(),
+            let n = this.primaryNavItem ? this.primaryNavItem.getBoundingClientRect() : {right: 0},
                 i = this.secondaryNavItem ? this.secondaryNavItem.getBoundingClientRect() : {left: 0};
 
             if (n.right > i.left) {
@@ -831,6 +832,7 @@ ButterMenu.prototype.reset = function () {
         });
     });
 
+    this.container.classList.remove("bm-initialized");
     this.container.classList.remove("bm-overlay-active");
     this.container.classList.remove("bm-dropdown-active");
     this.dropdownBackground.removeAttribute("style");
