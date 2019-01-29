@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.8] - 2019-01-29
+
+### Fixed
+- set aria-expanded to false on closeDropDown
+
 ## [1.2.7] - 2019-01-25
 
 ### Fixed

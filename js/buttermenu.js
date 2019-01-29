@@ -860,7 +860,8 @@ ButterMenu.prototype.closeDropdown = function () {
     let t = this;
     if (this.activeDropdown) {
         this.dropdownRoots.forEach(function (t, e) {
-            t.classList.remove("bm-active")
+            t.classList.remove("bm-active");
+            t.setAttribute("aria-expanded", "false");
         });
         let hiddenElement = this.dropdownContainer.querySelector('[aria-hidden="false"]');
 
