@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.9] - 2019-02-05
+
+### Fixed
+- allow vertical scroll in compact mode
+
 ## [1.2.8] - 2019-01-29
 
 ### Fixed
