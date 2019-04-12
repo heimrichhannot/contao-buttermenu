@@ -1,11 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.11] - 2019-04-12
+
+### Fixed
+- css perspective property removed from bm-menu 
+- css adjustments 1.2.10 related added
+
 ## [1.2.10] - 2019-04-12
 
 ### Fixed
 - accessibility support fixed, dropdownRoots are now buttons (toggle dropdown on focus with enter/space and tab through dropdown if toggled)
-- css perspective property removed from bm-menu 
 
 ## [1.2.9] - 2019-02-05
 

@@ -14,7 +14,6 @@ $bm-menu-compact-prev-height: 44px !default;
 @mixin bm-default($bg: $bm-menu-default-bg) {
   &.bm-menu {
     position: relative;
-    perspective: 2000px;
     z-index: $bm-menu-default-z-index;
 
     .bm-prev-wrapper {
@@ -247,7 +246,7 @@ $bm-menu-compact-prev-height: 44px !default;
       }
 
       > li {
-        > a {
+        > button, a {
           transform: translate3d(0, 0, 0);
           transition: all 250ms ease;
         }
@@ -255,7 +254,7 @@ $bm-menu-compact-prev-height: 44px !default;
 
       &.active-child {
         > li {
-          > a {
+          > button, a {
             transform: translate3d(-100%, 0, 0);
           }
         }
@@ -315,7 +314,7 @@ $bm-menu-compact-prev-height: 44px !default;
       }
     }
 
-    a {
+    button, a {
       &.bm-has-popup {
         position: relative;
 
