@@ -7,37 +7,37 @@ function ButterMenu(t) {
         return;
     }
 
-    this.root = this.container.querySelector(".bm-wrapper");
-    this.primaryNav = this.root.querySelector(".level_1");
-    this.primaryNavItem = this.root.querySelector(".bm-nav-root > .bm-item > .bm-has-dropdown");
-    this.secondaryNavItem = this.root.querySelector(".bm-nav-root > .bm-item > :not(.bm-has-dropdown)");
+    this.root = this.container.querySelector('.bm-wrapper');
+    this.primaryNav = this.root.querySelector('.level_1');
+    this.primaryNavItem = this.root.querySelector('.bm-nav-root > .bm-item > .bm-has-dropdown');
+    this.secondaryNavItem = this.root.querySelector('.bm-nav-root > .bm-item > :not(.bm-has-dropdown)');
     this.parentsMuted = this.container.getAttribute('data-bm-parent-muted');
     this.checkCollision();
-    window.addEventListener("load", this.checkCollision.bind(this));
-    window.addEventListener("resize", this.checkCollision.bind(this));
-    this.container.classList.add("bm-no-dropdown-transition");
-    this.dropdownBackground = this.container.querySelector(".bm-dropdown-bg");
-    this.dropdownContainer = this.container.querySelector(".bm-dropdown-container");
-    this.dropdownArrow = this.container.querySelector(".bm-dropdown-arrow");
-    this.dropdownRoots = this.queryArray(".bm-has-dropdown", this.root);
-    this.dropdownSections = this.queryArray(".bm-dropdown-section", this.container).map(function (t) {
+    window.addEventListener('load', this.checkCollision.bind(this));
+    window.addEventListener('resize', this.checkCollision.bind(this));
+    this.container.classList.add('bm-no-dropdown-transition');
+    this.dropdownBackground = this.container.querySelector('.bm-dropdown-bg');
+    this.dropdownContainer = this.container.querySelector('.bm-dropdown-container');
+    this.dropdownArrow = this.container.querySelector('.bm-dropdown-arrow');
+    this.dropdownRoots = this.queryArray('.bm-has-dropdown', this.root);
+    this.dropdownSections = this.queryArray('.bm-dropdown-section', this.container).map(function(t) {
         return {
             el: t,
-            name: t.getAttribute("data-bm-dropdown"),
-            content: t.querySelector(".bm-dropdown-content")
-        }
+            name: t.getAttribute('data-bm-dropdown'),
+            content: t.querySelector('.bm-dropdown-content'),
+        };
     });
     this.popupSections = [];
-    this.popupLists = this.queryArray(".bm-nav", this.container);
+    this.popupLists = this.queryArray('.bm-nav', this.container);
 
-    this.queryArray(".bm-nav li.bm-item", this.container).forEach(function (t, i) {
+    this.queryArray('.bm-nav li.bm-item', this.container).forEach(function(t, i) {
         t.closest('.bm-nav').setAttribute('data-bm-id', i);
     });
 
-    this.queryArray(".bm-nav li.bm-item", this.container).forEach(function (t, i) {
+    this.queryArray('.bm-nav li.bm-item', this.container).forEach(function(t, i) {
         let link = t.querySelector('.bm-link'),
-            dropDown = e.dropdownContainer.querySelector('[data-bm-dropdown="' + link.getAttribute("data-bm-dropdown") + '"]'),
-            next = t.querySelector(".bm-nav") || (dropDown ? dropDown.querySelector('.bm-nav') : null) || null,
+            dropDown = e.dropdownContainer.querySelector('[data-bm-dropdown="' + link.getAttribute('data-bm-dropdown') + '"]'),
+            next = t.querySelector('.bm-nav') || (dropDown ? dropDown.querySelector('.bm-nav') : null) || null,
             current = t.closest('.bm-nav'),
             previous = current.parentNode ? current.parentNode.closest('.bm-nav') : null;
 
@@ -50,7 +50,7 @@ function ButterMenu(t) {
             el: link,
             next: next,
             current: current,
-            previous: previous
+            previous: previous,
         });
     });
 
@@ -66,19 +66,23 @@ function ButterMenu(t) {
     this.compactBackdrop = document.body.appendChild(backdrop);
     this.compactCanvasToggler = document.querySelectorAll('[data-bm-compact-toggle="' + compactCanvasSelector + '"]');
     this.activeCompactCanvasToggler = null;
-    this.compactCanvasToggler.forEach(function (t, i) {
-        t.addEventListener('click', function (n) {
+    this.compactCanvasToggler.forEach(function(t, i) {
+        t.addEventListener('click', function(n) {
             n.preventDefault();
-            true === e.canvasOpen ? e.closeCompactCanvas(t) : e.openCompactCanvas(t);
-            e.activeCompactCanvasToggler = n.target;
-        });
-
-        t.addEventListener('keydown', function (n) {
-            if (n.keyCode === 13) {
-                e.container.classList.add('bm-keyboardfocus-within');
+            if (true === e.canvasOpen) {
+                e.closeCompactCanvas(t);
+            } else {
                 e.activeCompactCanvasToggler = n.target;
+                e.openCompactCanvas(t);
             }
         });
+
+        // t.addEventListener('keydown', function(n) {
+        //     if (n.keyCode === 13) {
+        //         e.container.classList.add('bm-keyboardfocus-within');
+        //         e.activeCompactCanvasToggler = n.target;
+        //     }
+        // });
     });
     this.compactPrev = this.container.querySelector('.bm-prev');
     this.compactPrevBtn = this.compactPrev.querySelector('.bm-prev-btn');
@@ -86,11 +90,11 @@ function ButterMenu(t) {
     this.compactPreviousActiveLink = null;
     this.enhancedElements = [];
     this.keyDownHandler = null;
-    window.addEventListener("load", this.registerEvents.bind(this));
-    window.addEventListener("resize", this.registerEvents.bind(this));
+    window.addEventListener('load', this.registerEvents.bind(this));
+    window.addEventListener('resize', this.registerEvents.bind(this));
 }
 
-ButterMenu.prototype.registerEvents = function () {
+ButterMenu.prototype.registerEvents = function() {
     let windowWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
 
     // nothing changed
@@ -105,23 +109,23 @@ ButterMenu.prototype.registerEvents = function () {
 
     if (this.isMobileViewport() && 'off-canvas' === this.compactMode) {
         this.registerOffCanvasEvents();
-        this.container.classList.add("bm-initialized");
+        this.container.classList.add('bm-initialized');
         return;
     }
 
     this.registerDefaultEvents();
-    this.container.classList.add("bm-initialized");
+    this.container.classList.add('bm-initialized');
 };
 
-ButterMenu.prototype.addEvent = function (element, event, handler) {
+ButterMenu.prototype.addEvent = function(element, event, handler) {
     this.enhancedElements.push({
-        element, event, handler
+        element, event, handler,
     });
 
     element.addEventListener(event, handler);
 };
 
-ButterMenu.prototype.clearEvents = function () {
+ButterMenu.prototype.clearEvents = function() {
     this.enhancedElements.forEach(ee => {
         ee.element.removeEventListener(ee.eventType, ee.handler);
     });
@@ -129,13 +133,13 @@ ButterMenu.prototype.clearEvents = function () {
     this.enhancedElements = [];
 };
 
-ButterMenu.prototype.getPopupSectionFromLink = function (link) {
+ButterMenu.prototype.getPopupSectionFromLink = function(link) {
     return this.popupSections.filter(section => {
         return link === section.el;
     })[0];
 };
 
-ButterMenu.prototype.getPreviousPopupSection = function (active) {
+ButterMenu.prototype.getPreviousPopupSection = function(active) {
     if (null === active.previous) {
         return active;
     }
@@ -145,72 +149,70 @@ ButterMenu.prototype.getPreviousPopupSection = function (active) {
     })[0];
 };
 
-ButterMenu.prototype.registerDefaultEvents = function () {
+ButterMenu.prototype.registerDefaultEvents = function() {
     let menu = this;
     let events = window.PointerEvent ? {
-        end: "pointerup",
-        enter: "pointerenter",
-        leave: "pointerleave"
+        end: 'pointerup',
+        enter: 'pointerenter',
+        leave: 'pointerleave',
     } : {
-        end: "touchend",
-        enter: "mouseenter",
-        leave: "mouseleave"
+        end: 'touchend',
+        enter: 'mouseenter',
+        leave: 'mouseleave',
     };
 
-    endRootNavHandler = function (event, element) {
+    endRootNavHandler = function(event, element) {
         event.preventDefault();
         event.stopPropagation();
         menu.toggleDropdown(element);
     };
 
-    focusInRootNavHandler = function (event, element) {
-        menu.stopCloseTimeout();
-        menu.openDropdown(element, {
-            keyboardNavigation: !0
-        });
-    };
-
-    enterRootNavHandler = function (event, element) {
-        if ("touch" !== event.pointerType) {
+    enterRootNavHandler = function(event, element) {
+        if ('touch' !== event.pointerType) {
             menu.stopCloseTimeout();
             menu.openDropdown(element);
         }
     };
 
-    clickRootNavHandler = function (event, element) {
+    clickRootNavHandler = function(event, element) {
         if (!menu.parentsMuted && !window.PointerEvent) {
+            console.log('return');
             return;
         }
 
         // prevent parent click
         if (('touch' === menu.parentsMuted && !window.PointerEvent) || 'both' === menu.parentsMuted || ('click' === menu.parentsMuted && window.PointerEvent)) {
+            console.log('prevent');
             event.preventDefault();
         }
+
+        event.keyboardNavigation = !0;
+        menu.activeDropdown === element ? menu.closeDropdown() : menu.openDropdown(element, event);
     };
 
-    leaveRootNavHandler = function (event, element) {
-        if ("touch" !== event.pointerType) {
+    leaveRootNavHandler = function(event, element) {
+        if ('touch' !== event.pointerType) {
             menu.startCloseTimeout();
         }
     };
 
-    containerEndHandler = function (event, element) {
+    containerEndHandler = function(event, element) {
         event.stopPropagation();
     };
 
-    containerEnterHandler = function (event, element) {
-        "touch" !== event.pointerType && menu.stopCloseTimeout();
+    containerEnterHandler = function(event, element) {
+        'touch' !== event.pointerType && menu.stopCloseTimeout();
     };
 
-    containerLeaveHandler = function (event, element) {
-        "touch" !== event.pointerType && menu.startCloseTimeout();
+    containerLeaveHandler = function(event, element) {
+        'touch' !== event.pointerType && menu.startCloseTimeout();
     };
 
-    bodyEndHandler = function (event, element) {
+    bodyEndHandler = function(event, element) {
         menu.touch.isDragging() || menu.closeDropdown();
     };
 
-    keydownHandler = function (event) {
+    keydownHandler = function(event) {
         if (null !== menu.keyDownHandler) {
             menu.keyDownHandler(event);
         }
@@ -223,36 +225,29 @@ ButterMenu.prototype.registerDefaultEvents = function () {
         eventType = events.end;
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                endRootNavHandler(event, element)
-            }
-        });
-
-        eventType = 'focusin';
-        menu.enhancedElements.push({
-            element, eventType, handler(event) {
-                focusInRootNavHandler(event, element);
-            }
+                endRootNavHandler(event, element);
+            },
         });
 
         eventType = events.enter;
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                enterRootNavHandler(event, element)
-            }
+                enterRootNavHandler(event, element);
+            },
         });
 
         eventType = 'click';
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                clickRootNavHandler(event, element)
-            }
+                clickRootNavHandler(event, element);
+            },
         });
 
         eventType = events.leave;
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                leaveRootNavHandler(event, element)
-            }
+                leaveRootNavHandler(event, element);
+            },
         });
     });
 
@@ -260,38 +255,38 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     eventType = events.end;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            containerEndHandler(event, element)
-        }
+            containerEndHandler(event, element);
+        },
     });
 
     eventType = events.enter;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            containerEnterHandler(event, element)
-        }
+            containerEnterHandler(event, element);
+        },
     });
 
     eventType = events.leave;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            containerLeaveHandler(event, element)
-        }
+            containerLeaveHandler(event, element);
+        },
     });
 
     element = document.body;
     eventType = events.end;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            bodyEndHandler(event, element)
-        }
+            bodyEndHandler(event, element);
+        },
     });
 
     eventType = 'keydown';
     element = this.container;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            keydownHandler(event)
-        }
+            keydownHandler(event);
+        },
     });
 
     // add listeners
@@ -300,32 +295,29 @@ ButterMenu.prototype.registerDefaultEvents = function () {
     });
 };
 
-ButterMenu.prototype.registerOffCanvasEvents = function () {
+ButterMenu.prototype.registerOffCanvasEvents = function() {
     let menu = this;
 
-    clickHandler = function (event, element) {
+    clickHandler = function(event, element) {
         menu.compactNext(element, event);
     };
 
-    prevClickHandler = function (element, event) {
+    prevClickHandler = function(element, event) {
         event.preventDefault();
         menu.compactPrevious(element, event);
     };
 
-    keydownHandler = function (event) {
+    keydownHandler = function(event) {
         if (null !== menu.keyDownHandler) {
             menu.keyDownHandler(event);
         }
     };
 
-    globalKeydownHandler = function (event) {
+    globalKeydownHandler = function(event) {
         // escape
         if (27 === event.keyCode) {
             menu.container.classList.add('bm-keyboardfocus-within');
             menu.closeCompactCanvas();
-            if (null !== menu.activeCompactCanvasToggler) {
-                menu.activeCompactCanvasToggler.focus();
-            }
         }
     };
 
@@ -336,8 +328,8 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
         element = section.el;
         menu.enhancedElements.push({
             element, eventType, handler(event) {
-                clickHandler(event, section)
-            }
+                clickHandler(event, section);
+            },
         });
     });
 
@@ -345,24 +337,24 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     element = this.compactPrev;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            prevClickHandler(element, event)
-        }
+            prevClickHandler(element, event);
+        },
     });
 
     eventType = 'keydown';
     element = this.compactCanvas;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            keydownHandler(event)
-        }
+            keydownHandler(event);
+        },
     });
 
     eventType = 'keydown';
     element = document.body;
     menu.enhancedElements.push({
         element, eventType, handler(event) {
-            globalKeydownHandler(event)
-        }
+            globalKeydownHandler(event);
+        },
     });
 
     // add listeners
@@ -373,12 +365,12 @@ ButterMenu.prototype.registerOffCanvasEvents = function () {
     menu.initCompact();
 };
 
-ButterMenu.prototype.initCompact = function () {
+ButterMenu.prototype.initCompact = function() {
     this.compactCanvas.setAttribute('aria-hidden', true);
     this.activeDropdown = false;
 
     this.dropdownSections.forEach(section => {
-        section.el.removeAttribute("aria-hidden", "false");
+        section.el.removeAttribute('aria-hidden', 'false');
 
         let uls = section.el.querySelectorAll('ul');
 
@@ -386,7 +378,6 @@ ButterMenu.prototype.initCompact = function () {
             ul.setAttribute('aria-hidden', true);
         });
     });
-
 
     this.primaryNav.setAttribute('aria-hidden', true);
 
@@ -432,7 +423,7 @@ ButterMenu.prototype.initCompact = function () {
     }
 };
 
-ButterMenu.prototype.compactNext = function (element, event) {
+ButterMenu.prototype.compactNext = function(element, event) {
     let menu = this;
     if (null !== element.next && (this.activeDropdown !== element || this.activeDropdown === this.rootDropdown)) {
         event.preventDefault();
@@ -451,18 +442,17 @@ ButterMenu.prototype.compactNext = function (element, event) {
 
         clearTimeout(this.enableTransitionTimeout);
 
-        this.enableTransitionTimeout = setTimeout(function () {
+        this.enableTransitionTimeout = setTimeout(function() {
             menu.updateCompactCanvasArrowKeyNavigation();
         }, 250);
 
         this.compactPrev.classList.remove('bm-root');
         this.compactPrev.classList.remove('disabled');
 
-
     }
 };
 
-ButterMenu.prototype.compactPrevious = function (element, event) {
+ButterMenu.prototype.compactPrevious = function(element, event) {
     let menu = this;
 
     if (this.activeDropdown.visible) {
@@ -479,7 +469,7 @@ ButterMenu.prototype.compactPrevious = function (element, event) {
 
     clearTimeout(this.enableTransitionTimeout);
 
-    this.enableTransitionTimeout = setTimeout(function () {
+    this.enableTransitionTimeout = setTimeout(function() {
         menu.updateCompactCanvasArrowKeyNavigation(menu.compactPreviousActiveLink);
     }, 250);
 
@@ -490,11 +480,11 @@ ButterMenu.prototype.compactPrevious = function (element, event) {
     }
 };
 
-ButterMenu.prototype.queryArray = function (element, context) {
-    return context || (context = document.body), Array.prototype.slice.call(context.querySelectorAll(element))
+ButterMenu.prototype.queryArray = function(element, context) {
+    return context || (context = document.body), Array.prototype.slice.call(context.querySelectorAll(element));
 };
 
-ButterMenu.prototype.closest = function (selector, context) {
+ButterMenu.prototype.closest = function(selector, context) {
     if (!selector || !context) return null;
 
     //polyfill .matches()
@@ -517,35 +507,34 @@ ButterMenu.prototype.closest = function (selector, context) {
     return parent;
 };
 
-
 ButterMenu.prototype.touch = {
-    isSupported: "ontouchstart" in window || navigator.maxTouchPoints,
-    isDragging: function () {
+    isSupported: 'ontouchstart' in window || navigator.maxTouchPoints,
+    isDragging: function() {
         let isDragging = false;
 
-        document.body.addEventListener("touchmove", function () {
+        document.body.addEventListener('touchmove', function() {
             isDragging = true;
         });
 
-        document.body.addEventListener("touchstart", function () {
+        document.body.addEventListener('touchstart', function() {
             isDragging = false;
         });
 
         return isDragging;
-    }
+    },
 };
 
-ButterMenu.prototype.openCompactCanvas = function (t) {
+ButterMenu.prototype.openCompactCanvas = function(t) {
     let e = this;
-    this.compactCanvasToggler.forEach(function (n, i) {
+    this.compactCanvasToggler.forEach(function(n, i) {
         n.classList.add('is-active');
     });
 
-    this.compactCanvas.classList.add("bm-canvas-transition");
+    this.compactCanvas.classList.add('bm-canvas-transition');
 
     clearTimeout(this.enableTransitionTimeout);
-    this.enableTransitionTimeout = setTimeout(function () {
-        e.compactCanvas.classList.remove("bm-canvas-transition");
+    this.enableTransitionTimeout = setTimeout(function() {
+        e.compactCanvas.classList.remove('bm-canvas-transition');
     }, 250);
 
     this.compactCanvas.classList.add('active');
@@ -553,31 +542,32 @@ ButterMenu.prototype.openCompactCanvas = function (t) {
     this.compactBackdrop.classList.add('active');
     this.canvasOpen = true;
 
-    this.compactCanvasToggler.forEach(function (n, i) {
+    this.compactCanvasToggler.forEach(function(n, i) {
         n.setAttribute('aria-expanded', 'true');
     });
 
     clearTimeout(this.disableTransitionTimeout);
-    this.disableTransitionTimeout = setTimeout(function () {
+    this.disableTransitionTimeout = setTimeout(function() {
         e.updateCompactCanvasArrowKeyNavigation();
         document.documentElement.classList.add('bm-canvas-open');
     }, 400);
 };
 
-ButterMenu.prototype.closeCompactCanvas = function () {
+ButterMenu.prototype.closeCompactCanvas = function() {
     let e = this;
     this.keyDownHandler = null;
-    this.compactCanvasToggler.forEach(function (n, i) {
+    this.activeCompactCanvasToggler.focus();
+    this.compactCanvasToggler.forEach(function(n, i) {
         n.classList.remove('is-active');
     });
     this.canvasOpen = false;
-    this.compactCanvas.classList.add("bm-canvas-transition");
+    this.compactCanvas.classList.add('bm-canvas-transition');
     clearTimeout(this.enableTransitionTimeout);
-    this.disableTransitionTimeout = setTimeout(function () {
-        e.compactCanvas.classList.remove("bm-canvas-transition")
+    this.disableTransitionTimeout = setTimeout(function() {
+        e.compactCanvas.classList.remove('bm-canvas-transition');
     }, 250);
 
-    this.compactCanvasToggler.forEach(function (n, i) {
+    this.compactCanvasToggler.forEach(function(n, i) {
         n.setAttribute('aria-expanded', 'false');
     });
 
@@ -588,17 +578,17 @@ ButterMenu.prototype.closeCompactCanvas = function () {
     document.documentElement.classList.remove('bm-canvas-open');
 };
 
-ButterMenu.prototype.isMobileViewport = function () {
+ButterMenu.prototype.isMobileViewport = function() {
     return window.innerWidth < parseInt(this.container.getAttribute('data-bm-compact-breakpoint') || 768);
 };
 
-ButterMenu.prototype.checkCollision = function () {
+ButterMenu.prototype.checkCollision = function() {
     if (!this.isMobileViewport()) {
         if (true === this.compact) {
             let t = document.body.clientWidth,
                 e = this.primaryNav.getBoundingClientRect();
             if (e.left + e.width / 2 > t / 2) {
-                this.container.classList.remove("compact");
+                this.container.classList.remove('compact');
                 this.compact = false;
             }
         } else {
@@ -606,40 +596,61 @@ ButterMenu.prototype.checkCollision = function () {
                 i = this.secondaryNavItem ? this.secondaryNavItem.getBoundingClientRect() : {left: 0};
 
             if (n.right > i.left) {
-                this.container.classList.add("compact");
+                this.container.classList.add('compact');
                 this.compact = true;
             }
         }
     }
 };
-ButterMenu.prototype.updateDropdownArrowKeyNavigation = function (t, e) {
+ButterMenu.prototype.updateDropdownArrowKeyNavigation = function(t, e) {
     let n = this;
-    let i = [].slice.call(e.querySelectorAll("a"));
+    let i = [].slice.call(e.querySelectorAll('a'));
+    let p = n.dropdownRoots.indexOf(t);
     let o = 0;
-    i[o].focus();
-    this.keyDownHandler = function (e) {
+    this.keyDownHandler = function(e) {
         if (9 === e.keyCode) {
-            t.focus();
+            e.preventDefault();
+
+            // focus first dropdown link if dropdown is already opened
+            if (e.target === t) {
+                i[o].focus();
+                return;
+            }
+
+            if (event.shiftKey) {
+                if (--o < 0) {
+                    n.startCloseTimeout();
+                    // focus dropdown root
+                    n.dropdownRoots[p].focus();
+                    return;
+                }
+            } else {
+                if (++o >= i.length) {
+                    n.startCloseTimeout();
+                    // focus dropdown root
+                    n.dropdownRoots[p].focus();
+                    return;
+                }
+            }
+
+            // focus dropdown links
+            i[o].focus();
+        }
+        // close dropdown using escape and focus the dropdown root
+        if (27 === e.keyCode) {
             n.startCloseTimeout();
-        } else if (38 === e.keyCode) {
-            e.preventDefault();
-            --o < 0 && (o += i.length);
-            i[o].focus();
-        } else if (40 === e.keyCode) {
-            e.preventDefault();
-            ++o >= i.length && (o -= i.length);
-            i[o].focus();
+            n.dropdownRoots[p].focus();
         }
     };
 };
 
-ButterMenu.prototype.updateCompactCanvasArrowKeyNavigation = function (focusElement) {
+ButterMenu.prototype.updateCompactCanvasArrowKeyNavigation = function(focusElement) {
     let n = this;
-    let i = [].slice.call(this.activeDropdown.visible.querySelectorAll("a"));
+    let i = [].slice.call(this.activeDropdown.visible.querySelectorAll('a'));
     let o = focusElement ? i.indexOf(focusElement) : 0;
     i[o].focus();
 
-    this.keyDownHandler = function (e) {
+    this.keyDownHandler = function(e) {
         // tab
         if (9 === e.keyCode) {
             n.container.classList.add('bm-keyboardfocus-within');
@@ -675,30 +686,30 @@ ButterMenu.prototype.updateCompactCanvasArrowKeyNavigation = function (focusElem
     };
 };
 
-ButterMenu.prototype.openDropdown = function (t, e) {
+ButterMenu.prototype.openDropdown = function(t, e) {
     let n = this;
     if (this.activeDropdown !== t) {
-        this.container.classList.add("bm-overlay-active");
-        this.container.classList.add("bm-dropdown-active");
+        this.container.classList.add('bm-overlay-active');
+        this.container.classList.add('bm-dropdown-active');
         this.activeDropdown = t;
-        this.activeDropdown.setAttribute("aria-expanded", "true");
-        this.dropdownRoots.forEach(function (t, e) {
+        this.activeDropdown.setAttribute('aria-expanded', 'true');
+        this.dropdownRoots.forEach(function(t, e) {
             if (t !== n.activeDropdown) {
-                t.classList.remove("bm-active");
-                t.setAttribute("aria-expanded", "false");
+                t.classList.remove('bm-active');
+                t.setAttribute('aria-expanded', 'false');
             }
         });
-        t.classList.add("bm-active");
+        t.classList.add('bm-active');
 
-        let i, o, a, r = t.getAttribute("data-bm-dropdown"), s = "left";
-        this.dropdownSections.forEach(function (c) {
-            c.el.classList.remove("bm-active");
-            c.el.classList.remove("left");
-            c.el.classList.remove("right");
+        let i, o, a, r = t.getAttribute('data-bm-dropdown'), s = 'left';
+        this.dropdownSections.forEach(function(c) {
+            c.el.classList.remove('bm-active');
+            c.el.classList.remove('left');
+            c.el.classList.remove('right');
             if (c.name === r) {
-                c.el.setAttribute("aria-hidden", "false");
-                c.el.classList.add("bm-active");
-                s = "right";
+                c.el.setAttribute('aria-hidden', 'false');
+                c.el.classList.add('bm-active');
+                s = 'right';
 
                 let list = c.content.querySelector('ul'),
                     listStyle = window.getComputedStyle(list);
@@ -714,7 +725,7 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                             listItemHeight += listItem.scrollHeight || listItem.offsetHeight;
 
                             if (lit + 1 === breakAt) {
-                                list.style.maxHeight = listItemHeight + "px";
+                                list.style.maxHeight = listItemHeight + 'px';
                                 break;
                             }
                         }
@@ -724,19 +735,18 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 i = list.scrollWidth || list.offsetWidth || c.content.scrollWidth || c.content.offsetWidth; // prior scrollWith to support flexbox `colums`
                 o = list.scrollHeight || list.offsetHeight || c.content.scrollHeight || c.content.offsetHeight;  // prior scrollHeight to support flexbox `colums`
 
-
-                if (c.content.getAttribute("data-bm-fixed")) {
-                    c.content.setAttribute("data-bm-fixed", true)
+                if (c.content.getAttribute('data-bm-fixed')) {
+                    c.content.setAttribute('data-bm-fixed', true);
                 } else {
-                    c.content.style.width = i + "px";
-                    c.content.style.height = o + "px";
+                    c.content.style.width = i + 'px';
+                    c.content.style.height = o + 'px';
                 }
 
                 a = c.content;
                 e && e.keyboardNavigation && n.updateDropdownArrowKeyNavigation(t, c.el);
             } else {
                 c.el.classList.add(s);
-                c.el.setAttribute("aria-hidden", "true");
+                c.el.setAttribute('aria-hidden', 'true');
             }
         });
 
@@ -759,13 +769,13 @@ ButterMenu.prototype.openDropdown = function (t, e) {
         x = Math.round(x);
 
         clearTimeout(this.disableTransitionTimeout);
-        this.enableTransitionTimeout = setTimeout(function () {
-            n.container.classList.remove("bm-no-dropdown-transition")
+        this.enableTransitionTimeout = setTimeout(function() {
+            n.container.classList.remove('bm-no-dropdown-transition');
         }, 50);
-        this.dropdownBackground.style.transform = "translateX(" + x + "px) scaleX(" + c + ") scaleY(" + d + ")";
-        this.dropdownContainer.style.transform = "translateX(" + x + "px)";
-        this.dropdownContainer.style.width = i + "px";
-        this.dropdownContainer.style.height = o + "px";
+        this.dropdownBackground.style.transform = 'translateX(' + x + 'px) scaleX(' + c + ') scaleY(' + d + ')';
+        this.dropdownContainer.style.transform = 'translateX(' + x + 'px)';
+        this.dropdownContainer.style.width = i + 'px';
+        this.dropdownContainer.style.height = o + 'px';
 
         let arrowAlignmentOptions = ['left', 'center', 'right'];
         let arrowAlignment = arrowAlignmentOptions[arrowAlignmentOptions.indexOf(this.container.getAttribute('data-bm-arrow-alignment') || 'center')];
@@ -781,34 +791,34 @@ ButterMenu.prototype.openDropdown = function (t, e) {
                 w += activeNavTextRect.width;
                 break;
         }
-        this.dropdownArrow.style.transform = "translateX(" + w + "px) rotate(45deg)";
+        this.dropdownArrow.style.transform = 'translateX(' + w + 'px) rotate(45deg)';
     }
 };
 
-ButterMenu.prototype.openOffCanvasDropdown = function (t, e) {
+ButterMenu.prototype.openOffCanvasDropdown = function(t, e) {
     if (this.activeDropdown !== t) {
-        this.container.classList.add("bm-dropdown-active");
+        this.container.classList.add('bm-dropdown-active');
         this.activeDropdown = t;
-        this.activeDropdown.setAttribute("aria-expanded", "true");
-        this.dropdownRoots.forEach(function (t, e) {
-            t.classList.remove("active")
+        this.activeDropdown.setAttribute('aria-expanded', 'true');
+        this.dropdownRoots.forEach(function(t, e) {
+            t.classList.remove('active');
         });
-        t.classList.add("active");
+        t.classList.add('active');
 
-        let i, o, a, r = t.getAttribute("data-bm-dropdown");
-        this.dropdownSections.forEach(function (c) {
-            c.el.classList.remove("active");
-            c.el.classList.remove("left");
-            c.el.classList.remove("right");
+        let i, o, a, r = t.getAttribute('data-bm-dropdown');
+        this.dropdownSections.forEach(function(c) {
+            c.el.classList.remove('active');
+            c.el.classList.remove('left');
+            c.el.classList.remove('right');
             if (c.name === r) {
-                c.el.setAttribute("aria-hidden", "false");
-                c.el.classList.add("active");
+                c.el.setAttribute('aria-hidden', 'false');
+                c.el.classList.add('active');
             }
         });
     }
 };
 
-ButterMenu.prototype.reset = function () {
+ButterMenu.prototype.reset = function() {
     // default
     this.activeDropdown = false;
     this.keyDownHandler = null;
@@ -817,30 +827,26 @@ ButterMenu.prototype.reset = function () {
     clearTimeout(this.enableTransitionTimeout);
 
     this.dropdownRoots.forEach(element => {
-        element.classList.remove("style");
-        element.removeAttribute("style");
-        element.setAttribute("aria-expanded", "false");
+        element.classList.remove('style');
+        element.removeAttribute('style');
+        element.setAttribute('aria-expanded', 'false');
     });
 
     this.dropdownSections.forEach(section => {
-        section.el.classList.remove("bm-active");
-        section.el.classList.remove("right");
-        section.el.setAttribute("aria-hidden", "true");
-
-        section.el.querySelectorAll('.bm-link').forEach(link => {
-            link.setAttribute('tabindex', '-1');
-        });
+        section.el.classList.remove('bm-active');
+        section.el.classList.remove('right');
+        section.el.setAttribute('aria-hidden', 'true');
     });
 
-    this.container.classList.remove("bm-initialized");
-    this.container.classList.remove("bm-overlay-active");
-    this.container.classList.remove("bm-dropdown-active");
-    this.dropdownBackground.removeAttribute("style");
-    this.dropdownContainer.removeAttribute("style");
-    this.dropdownArrow.removeAttribute("style");
+    this.container.classList.remove('bm-initialized');
+    this.container.classList.remove('bm-overlay-active');
+    this.container.classList.remove('bm-dropdown-active');
+    this.dropdownBackground.removeAttribute('style');
+    this.dropdownContainer.removeAttribute('style');
+    this.dropdownArrow.removeAttribute('style');
 
     // off-canvas
-    this.compactCanvasToggler.forEach(function (n, i) {
+    this.compactCanvasToggler.forEach(function(n, i) {
         n.classList.remove('is-active');
     });
     this.canvasOpen = false;
@@ -856,47 +862,47 @@ ButterMenu.prototype.reset = function () {
     document.documentElement.classList.remove('bm-canvas-open');
 };
 
-ButterMenu.prototype.closeDropdown = function () {
+ButterMenu.prototype.closeDropdown = function() {
     let t = this;
     if (this.activeDropdown) {
-        this.dropdownRoots.forEach(function (t, e) {
-            t.classList.remove("bm-active");
-            t.setAttribute("aria-expanded", "false");
+        this.dropdownRoots.forEach(function(t, e) {
+            t.classList.remove('bm-active');
+            t.setAttribute('aria-expanded', 'false');
         });
         let hiddenElement = this.dropdownContainer.querySelector('[aria-hidden="false"]');
 
         if (null !== hiddenElement) {
-            hiddenElement.setAttribute("aria-hidden", "true")
+            hiddenElement.setAttribute('aria-hidden', 'true');
         }
 
         clearTimeout(this.enableTransitionTimeout);
 
-        this.disableTransitionTimeout = setTimeout(function () {
-            t.container.classList.add("bm-no-dropdown-transition")
+        this.disableTransitionTimeout = setTimeout(function() {
+            t.container.classList.add('bm-no-dropdown-transition');
         }, 50);
 
-        this.container.classList.remove("bm-overlay-active");
-        this.container.classList.remove("bm-dropdown-active");
+        this.container.classList.remove('bm-overlay-active');
+        this.container.classList.remove('bm-dropdown-active');
         this.activeDropdown = void 0;
         this.keyDownHandler = null;
     }
 };
-ButterMenu.prototype.toggleDropdown = function (t) {
-    this.activeDropdown === t ? this.closeDropdown() : this.openDropdown(t)
+ButterMenu.prototype.toggleDropdown = function(t) {
+    this.activeDropdown === t ? this.closeDropdown() : this.openDropdown(t);
 };
 
-ButterMenu.prototype.startCloseTimeout = function () {
+ButterMenu.prototype.startCloseTimeout = function() {
     let t = this;
-    t.closeDropdownTimeout = setTimeout(function () {
-        t.closeDropdown()
-    }, 150)
+    t.closeDropdownTimeout = setTimeout(function() {
+        t.closeDropdown();
+    }, 150);
 };
 
-ButterMenu.prototype.stopCloseTimeout = function () {
-    clearTimeout(this.closeDropdownTimeout)
+ButterMenu.prototype.stopCloseTimeout = function() {
+    clearTimeout(this.closeDropdownTimeout);
 };
 
-(function (ElementProto) {
+(function(ElementProto) {
     if (typeof ElementProto.matches !== 'function') {
         ElementProto.matches = ElementProto.msMatchesSelector || ElementProto.mozMatchesSelector || ElementProto.webkitMatchesSelector || function matches(selector) {
             var element = this;
@@ -928,7 +934,7 @@ ButterMenu.prototype.stopCloseTimeout = function () {
     }
 })(window.Element.prototype);
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function() {
     new ButterMenu('.bm-menu');
 });
 
