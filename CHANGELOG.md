@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.2.14] - 2019-04-30
+
+### Fixed
+- error when no compact canvas selector set
+
 ## [1.2.12] - 2019-04-12
 
 ### Fixed

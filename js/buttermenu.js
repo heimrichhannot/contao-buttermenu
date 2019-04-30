@@ -853,8 +853,10 @@ ButterMenu.prototype.reset = function() {
     this.compactPrevTitle.textContent = '';
     this.compactPrev.disabled = false;
     this.compactPrev.classList.remove('bm-root');
-    this.compactCanvas.classList.remove('active');
-    this.compactCanvas.setAttribute('aria-hidden', false);
+    if (null !== this.compactCanvas) {
+        this.compactCanvas.classList.remove('active');
+        this.compactCanvas.setAttribute('aria-hidden', false);
+    }
     this.compactBackdrop.classList.remove('active');
     this.compactPreviousActiveLink = null;
     this.container.classList.remove('bm-keyboardfocus-within');
