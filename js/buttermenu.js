@@ -176,13 +176,11 @@ ButterMenu.prototype.registerDefaultEvents = function() {
 
     clickRootNavHandler = function(event, element) {
         if (!menu.parentsMuted && !window.PointerEvent) {
-            console.log('return');
             return;
         }
 
         // prevent parent click
         if (('touch' === menu.parentsMuted && !window.PointerEvent) || 'both' === menu.parentsMuted || ('click' === menu.parentsMuted && window.PointerEvent)) {
-            console.log('prevent');
             event.preventDefault();
         }
 
@@ -381,11 +379,13 @@ ButterMenu.prototype.initCompact = function() {
 
     this.primaryNav.setAttribute('aria-hidden', true);
 
+    let showCurrent = this.container.getAttribute('data-bm-compact-show-current') === 'true' || false;
+
     this.popupSections.forEach(section => {
         section.el.removeAttribute('tabindex');
 
         // active dropDown
-        if ((section.el.classList.contains('trail') || section.el.classList.contains('active')) && section.next) {
+        if (showCurrent && (section.el.classList.contains('trail') || section.el.classList.contains('active')) && section.next) {
             this.activeDropdown = section;
             this.activeDropdown.visible = this.activeDropdown.current;
 
@@ -646,9 +646,12 @@ ButterMenu.prototype.updateDropdownArrowKeyNavigation = function(t, e) {
 
 ButterMenu.prototype.updateCompactCanvasArrowKeyNavigation = function(focusElement) {
     let n = this;
-    let i = [].slice.call(this.activeDropdown.visible.querySelectorAll('a'));
+    let i = [].slice.call(this.activeDropdown.visible.querySelectorAll('.bm-link'));
     let o = focusElement ? i.indexOf(focusElement) : 0;
-    i[o].focus();
+
+    if ('undefined' !== typeof i[o]) {
+        i[o].focus();
+    }
 
     this.keyDownHandler = function(e) {
         // tab

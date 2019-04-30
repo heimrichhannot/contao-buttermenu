@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] - 2019-04-30
+
+### Fixed
+- compact mode keyDown handler error caused by `button` dropdown toggle in version `1.2.10'
+- removed console.log debug messages
+
+### Added
+- `data-bm-compact-show-current` support added as data attribute (default: false), in compact mode the active submenu is now no longer the active menu
+
 ## [1.2.14] - 2019-04-30
 
 ### Fixed
