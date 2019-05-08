@@ -149,6 +149,16 @@ ButterMenu.prototype.getPreviousPopupSection = function(active) {
     })[0];
 };
 
+ButterMenu.prototype.getNextPopupSection = function(active) {
+    if (null === active.next) {
+        return active;
+    }
+
+    return this.popupSections.filter(section => {
+        return active.next === section.current;
+    })[0];
+};
+
 ButterMenu.prototype.registerDefaultEvents = function() {
     let menu = this;
     let events = window.PointerEvent ? {
@@ -384,31 +394,29 @@ ButterMenu.prototype.initCompact = function() {
     this.popupSections.forEach(section => {
         section.el.removeAttribute('tabindex');
 
+        if (section.next) {
+            section.next.setAttribute('data-bm-prev-text', section.el.textContent);
+        }
+
         // active dropDown
-        if (showCurrent && (section.el.classList.contains('trail') || section.el.classList.contains('active')) && section.next) {
+        if (showCurrent && section.el.classList.contains('active')) {
             this.activeDropdown = section;
             this.activeDropdown.visible = this.activeDropdown.current;
 
-            section.current.classList.add('active-child'); // trailing parents should not be active
-
-            if (section.next) {
-                this.activeDropdown.visible = this.activeDropdown.next;
-                section.next.classList.add('active');
-                section.next.setAttribute('aria-hidden', 'false');
+            if(null !== section.previous){
+                section.previous.classList.add('active-child'); // trailing parents should not be active
+                section.previous.setAttribute('aria-hidden', false);
             }
+
+            this.activeDropdown.visible.classList.add('active');
+            this.activeDropdown.visible.setAttribute('aria-hidden', 'false');
+
+            this.compactPrevTitle.textContent = this.activeDropdown.visible.getAttribute('data-bm-prev-text');
+            this.compactPrev.removeAttribute('tabindex');
         }
 
         if (!this.rootDropdown && section.current.classList.contains('bm-nav-root')) {
             this.rootDropdown = section;
-        }
-
-        if (section.next) {
-            section.next.setAttribute('data-bm-prev-text', section.el.textContent);
-
-            if (this.activeDropdown === section) {
-                this.compactPrevTitle.textContent = section.el.textContent;
-                this.compactPrev.removeAttribute('tabindex');
-            }
         }
     });
 
@@ -425,9 +433,11 @@ ButterMenu.prototype.initCompact = function() {
 
 ButterMenu.prototype.compactNext = function(element, event) {
     let menu = this;
-    if (null !== element.next && (this.activeDropdown !== element || this.activeDropdown === this.rootDropdown)) {
+    if (null !== element.next) {
         event.preventDefault();
-        this.activeDropdown.visible.setAttribute('aria-hidden', true);
+        if (null === this.activeDropdown.previous) {
+            this.activeDropdown.visible.setAttribute('aria-hidden', true);
+        }
         this.activeDropdown.visible.classList.remove('active');
         this.compactPreviousActiveLink = element.el;
         element.next.classList.add('active');
@@ -436,8 +446,8 @@ ButterMenu.prototype.compactNext = function(element, event) {
 
         element.current.classList.add('active-child'); // trailing parents should not be active
 
-        this.activeDropdown = element;
-        this.activeDropdown.visible = this.activeDropdown.next;
+        this.activeDropdown = this.getNextPopupSection(element);
+        this.activeDropdown.visible = this.activeDropdown.current;
         this.activeDropdown.visible.setAttribute('aria-hidden', false);
 
         clearTimeout(this.enableTransitionTimeout);
@@ -461,6 +471,7 @@ ButterMenu.prototype.compactPrevious = function(element, event) {
     }
 
     this.activeDropdown = this.getPreviousPopupSection(this.activeDropdown);
+
     this.activeDropdown.visible = this.activeDropdown.current;
     this.activeDropdown.visible.classList.remove('active-child');
     this.activeDropdown.visible.classList.add('active');

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] - 2019-05-08
+
+### Added
+- Support nested navigation in compact mode beyond 2nd level 
+
 ## [1.3.0] - 2019-04-30
 
 ### Fixed
