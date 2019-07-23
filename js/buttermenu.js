@@ -181,6 +181,8 @@ ButterMenu.prototype.registerDefaultEvents = function() {
         if ('touch' !== event.pointerType) {
             menu.stopCloseTimeout();
             menu.openDropdown(element);
+        } else if ('touch' === event.pointerType) {
+            menu.openDropdown(element);
         }
     };
 
