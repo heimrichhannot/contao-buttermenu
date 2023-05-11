@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.3] - 2023-05-11
+
+### Fixed
+- Support for touch on large devices
+
 ## [1.4.1] - 2019-07-23
 
 ### Added

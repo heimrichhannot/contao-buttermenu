@@ -174,7 +174,7 @@ ButterMenu.prototype.registerDefaultEvents = function() {
     endRootNavHandler = function(event, element) {
         event.preventDefault();
         event.stopPropagation();
-        menu.toggleDropdown(element);
+        menu.toggleDropdown(event, element);
     };
 
     enterRootNavHandler = function(event, element) {
@@ -197,7 +197,10 @@ ButterMenu.prototype.registerDefaultEvents = function() {
         }
 
         event.keyboardNavigation = !0;
-        menu.activeDropdown === element ? menu.closeDropdown() : menu.openDropdown(element, event);
+        
+        if ('mouse' == event.pointerType) {
+            menu.activeDropdown === element ? menu.closeDropdown() : menu.openDropdown(element, event);
+        }
     };
 
     leaveRootNavHandler = function(event, element) {
@@ -905,8 +908,10 @@ ButterMenu.prototype.closeDropdown = function() {
         this.keyDownHandler = null;
     }
 };
-ButterMenu.prototype.toggleDropdown = function(t) {
-    this.activeDropdown === t ? this.closeDropdown() : this.openDropdown(t);
+ButterMenu.prototype.toggleDropdown = function(t, e) {
+    if ('mouse' == t.pointerType) {
+        this.activeDropdown === e ? this.closeDropdown() : this.openDropdown(e);
+    }
 };
 
 ButterMenu.prototype.startCloseTimeout = function() {
